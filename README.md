@@ -16,7 +16,7 @@ PyDracula： https://github.com/Wanderson-Magalhaes/Modern_GUI_PyDracula_PySide6
 您可以通过以下命令安装 PyDracula：
 
 ```
-clone https://github.com/yourusername/pydracula
+clone https://github.com/clarencejh/PyDracula-flet
 ```
 ## 许可证
 
@@ -24,4 +24,4 @@ clone https://github.com/yourusername/pydracula
 
 ## 联系
 
-如需更多信息，请访问我们的 GitHub 页面：[PyDracula GitHub](https://github.com/yourusername/pydracula)
+如需更多信息，请访问我们的 GitHub 页面：[PyDracula GitHub](https://github.com/clarencejh/PyDracula-flet)

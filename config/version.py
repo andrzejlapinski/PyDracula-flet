@@ -8,4 +8,4 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 • 配置持久化
 """
 
-GITHUB_URL = "https://github.com/yourusername/pydracula-flet" 
+GITHUB_URL = "https://github.com/clarencejh/PyDracula-flet" 
