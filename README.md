@@ -149,6 +149,10 @@ def save_setting(self, section: str, key: str, value: str):
         self.config_manager.set(section, key, value)
 ```
 
+### 通用方法
+
+通用方法可以添加到 `core/base_page.py` 中。
+
 ## 许可证
 
 此项目采用 MIT 许可证。有关详细信息，请参阅 [LICENSE](LICENSE) 文件。

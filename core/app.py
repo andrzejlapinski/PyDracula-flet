@@ -330,16 +330,16 @@ class App:
         :param nav_item: 导航项配置，例如 {"icon": Icons.HOME, "label": "主页"}
         :param page: 页面实例
         """
-        index = len(self.pages)
-        page.page = self.page
-        self.pages[index] = page
-        self.nav_items.append(nav_item)
+        index = len(self.pages)                         # 获取当前页面数量作为新页面的索引
+        page.page = self.page                           # 将当前页面实例赋值给新页面
+        self.pages[index] = page                        # 将新页面添加到页面字典中
+        self.nav_items.append(nav_item)                 # 将导航项添加到导航项列表中
         
-        if self.content_area is None:
+        if self.content_area is None:                   # 如果内容区域尚未创建
             self.content_area = Container(
-                content=page.content,
-                expand=True,
-                bgcolor=self.theme_colors.bg_color,
+                content=page.content,                   # 设置内容为新页面的内容
+                expand=True,                            # 使内容区域扩展以填充可用空间
+                bgcolor=self.theme_colors.bg_color,     # 设置背景色为主题颜色
             )
 
     def add_exit_nav(self):
@@ -378,4 +378,3 @@ class App:
         
         # 重新创建布局以更新所有组件的主题
         self._create_layout()
-  

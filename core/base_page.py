@@ -23,7 +23,7 @@ class BasePage(ABC):
             padding=padding.only(top=10, bottom=10, left=30),
             bgcolor=self.theme_colors.nav_color,
             margin=margin.only(left=-10, bottom=20),
-            width=5000,
+            width=5000,                                             # 设置标题栏宽度,填充整行
         )
 
     @abstractmethod
