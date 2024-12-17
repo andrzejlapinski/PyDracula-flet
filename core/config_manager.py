@@ -28,7 +28,6 @@ class ConfigManager:
         }
         self.config["App"] = {
             "title": "PyDracula",
-            "language": "zh_CN",
         }
         self.save()
 

@@ -177,7 +177,7 @@ class SettingsPage(BasePage):
                                                     size=16,
                                                 ),
                                                 Text(
-                                                    "2024 clarencejh",
+                                                    "2024 calg",
                                                     size=14,
                                                     color=self.theme_colors.text_color,
                                                     opacity=0.5,
