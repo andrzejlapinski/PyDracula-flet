@@ -1,4 +1,4 @@
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 APP_DESCRIPTION = """
 PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应用程序框架。
 它提供了：

@@ -1,13 +1,58 @@
-from flet import Column, Container, Row, Text, IconButton, Icons, ProgressBar, ListTile, Icon, padding, border_radius
+from flet import (
+    Column, Container, Row, Text, IconButton, Icons, ProgressBar, ListTile, 
+    Icon, padding, border_radius, Stack, Image, alignment,
+    MainAxisAlignment, Page, AnimatedSwitcher, AnimatedSwitcherTransition,
+    AnimationCurve, FloatingActionButton, CrossAxisAlignment
+)
+from components.fletcarousel.horizontal import BasicAnimatedHorizontalCarousel, BasicHorizontalCarousel
+from components.fletcarousel.attributes import AutoCycle, HintLine
 from core.base_page import BasePage
 
 class HomePage(BasePage):
     def __init__(self, **kwargs):
+        self.images = [
+            "banner1.jpg",
+            "banner2.jpg",
+            "banner3.jpg",
+        ]
         super().__init__(title="主页", **kwargs)
+
+    def _build_carousel(self) -> Container:
+        """构建轮播图"""
+        # 根据窗口的大小来修改轮播图显示的数量
+        items_count = 4 if self.page.width > 800 else 3
+        return BasicHorizontalCarousel(
+            page=self.page,
+            items_count=items_count,
+            auto_cycle=AutoCycle(duration=5),
+            items=[
+                Container(
+                    content=Text(value=str(i), size=20),
+                    height=200,
+                    width=300,
+                    bgcolor='#9AA6B2',
+                    border_radius=15,
+                    alignment=alignment.center,
+                ) for i in range(10)
+            ],
+            buttons=[
+                FloatingActionButton(
+                    icon=Icons.NAVIGATE_BEFORE,
+                    bgcolor='#1f2127'
+                ),
+                FloatingActionButton(
+                    icon=Icons.NAVIGATE_NEXT,
+                    bgcolor='#1f2127'
+                )
+            ],
+            vertical_alignment=CrossAxisAlignment.CENTER,
+            items_alignment=MainAxisAlignment.CENTER
+        )
 
     def build_content(self) -> Column:
         return Column(
             controls=[
+                self._build_carousel(),  # 添加轮播图
                 self._build_stats_section(),
                 self._build_actions_section(),
                 self._build_progress_section(),

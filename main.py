@@ -5,10 +5,14 @@ from pages.home import HomePage
 from pages.widgets import WidgetsPage
 from pages.settings import SettingsPage
 from pages.inputs import InputsPage
+from pages.carousel import CarouselPage
 from core.config_manager import ConfigManager
 
 
 def main(page: ft.Page):
+    # 设置资源目录
+    page.assets_dir = "assets"
+    
     # 创建配置管理器
     config_manager = ConfigManager()
     
@@ -28,17 +32,22 @@ def main(page: ft.Page):
     # 注册页面和导航项
     app.register_page(
         nav_item={"icon": Icons.HOME_ROUNDED, "label": "主页"},
-        page=HomePage(theme_colors=app.theme_colors, theme_mode=config.theme_mode)
+        page=HomePage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
         nav_item={"icon": Icons.WIDGETS_ROUNDED, "label": "按钮组件"},
-        page=WidgetsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode)
+        page=WidgetsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
         nav_item={"icon": Icons.INPUT_ROUNDED, "label": "输入控件"},
-        page=InputsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode)
+        page=InputsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
+    )
+    
+    app.register_page(
+        nav_item={"icon": Icons.SLIDESHOW_ROUNDED, "label": "轮播图"},
+        page=CarouselPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
@@ -47,7 +56,8 @@ def main(page: ft.Page):
             theme_colors=app.theme_colors,
             theme_mode=config.theme_mode,
             on_theme_changed=app._update_theme,
-            config_manager=config_manager
+            config_manager=config_manager,
+            page=page
         )
     )
     

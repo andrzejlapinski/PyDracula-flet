@@ -8,7 +8,7 @@ class ThemeColors:
             self.bg_color = "#222831"
             self.nav_color = "#393E46"
             self.card_color = "#393E46"
-            self.divider_color = "#9AA6B2"
+            self.divider_color = "#1A1A1D"
             self.text_color = "#EEEEEE"
         else:
             self.title_bar_color = "#E9E9E9"  # 标题栏背景色 

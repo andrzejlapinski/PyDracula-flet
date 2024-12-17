@@ -340,11 +340,21 @@ class App:
         """初始化页面"""
         self.page = page
         self.platform = self.page.platform.value
+        
+        # 为所有页面设置 page 对象
+        for page_instance in self.pages.values():
+            page_instance.page = self.page
+            
         self._init_window()
         self._init_theme()
-        
+
         # 添加主容器到页面
         self.page.add(self.main_container)
+        
+        # 调用当前页面的 did_mount（如果存在）
+        if self.current_page_index in self.pages and hasattr(self.pages[self.current_page_index], 'did_mount'):
+            self.pages[self.current_page_index].did_mount()
+            
         self.page.update()
 
     def register_page(self, nav_item: Dict, page: BasePage):
@@ -354,16 +364,16 @@ class App:
         :param nav_item: 导航项配置，例如 {"icon": Icons.HOME, "label": "主页"}
         :param page: 页面实例
         """
-        index = len(self.pages)                         # 获取当前页面数量作为新页面的索引
-        page.page = self.page                           # 将当前页面实例赋值给新页面
-        self.pages[index] = page                        # 将新页面添加到页面字典中
-        self.nav_items.append(nav_item)                 # 将导航项添加到导航项列表中
+        index = len(self.pages)
+        page.page = self.page  # 设置 page 对象
+        self.pages[index] = page
+        self.nav_items.append(nav_item)
         
-        if self.content_area is None:                   # 如果内容区域尚未创建
+        if self.content_area is None:
             self.content_area = Container(
-                content=page.content,                   # 设置内容为新页面的内容
-                expand=True,                            # 使内容区域扩展以填充可用空间
-                bgcolor=self.theme_colors.bg_color,     # 设置背景色为主题颜色
+                content=page.content,
+                expand=True,
+                bgcolor=self.theme_colors.bg_color,
             )
 
     def add_exit_nav(self):

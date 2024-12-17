@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Callable
-from flet import Container, Column, Text, padding, margin, Page
+from flet import Container, Column, Text, padding, margin, Page, border, border_radius
 from .theme import ThemeColors
 
 class BasePage(ABC):
@@ -11,6 +11,20 @@ class BasePage(ABC):
         self.title = title
         self.page = page
         self.content = self.build()
+    
+    def did_mount(self):
+        """
+        组件挂载后的生命周期方法
+        子类可以重写此方法以在组件挂载后执行操作
+        """
+        pass
+        
+    def will_unmount(self):
+        """
+        组件卸载前的生命周期方法
+        子类可以重写此方法以在组件卸载前执行清理操作
+        """
+        pass
     
     def build_title(self) -> Container:
         """构建统一的标题栏"""
@@ -54,3 +68,21 @@ class BasePage(ABC):
         self.theme_colors = theme_colors
         self.theme_mode = theme_mode
         self.content = self.build() 
+    
+    
+    def build_section(self, title: str, content: Container) -> Container:
+        """构建一个带标题的部分"""
+        return Container(
+            content=Column(
+                controls=[
+                    Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
+                    content,
+                ],
+                spacing=10,
+            ),
+            bgcolor=self.theme_colors.card_color,
+            padding=30,
+            border_radius=border_radius.all(10),
+            border=border.all(1, self.theme_colors.divider_color),  # 添加轮廓线
+            margin=padding.symmetric(horizontal=20),
+        )

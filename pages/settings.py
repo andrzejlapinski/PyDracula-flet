@@ -38,7 +38,7 @@ class SettingsPage(BasePage):
         return Column(
             controls=[
                 # 主题设置
-                self._build_section(
+                self.build_section(
                     "主题设置",
                     Column(
                         controls=[
@@ -64,7 +64,7 @@ class SettingsPage(BasePage):
                         ],
                     ),
                 ),
-                self._build_section(
+                self.build_section(
                     "窗口设置",
                     Row(
                         controls=[
@@ -126,7 +126,7 @@ class SettingsPage(BasePage):
                     ),
                 ),
                 # 添加关于部分
-                self._build_section(
+                self.build_section(
                     "关于",
                     Column(
                         controls=[
@@ -203,21 +203,6 @@ class SettingsPage(BasePage):
             scroll="auto",
             spacing=20,
         )
-
-    def _build_section(self, title: str, content: Container) -> Container:
-        return Container(
-            content=Column(
-                controls=[
-                    Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
-                    content,
-                ],
-                spacing=10,
-            ),
-            bgcolor=self.theme_colors.card_color,
-            padding=30,
-            border_radius=border_radius.all(10),
-            margin=padding.symmetric(horizontal=20),
-        ) 
 
     def _check_updates(self, e):
         """检查更新"""

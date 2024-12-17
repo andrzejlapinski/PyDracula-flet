@@ -19,32 +19,17 @@ class InputsPage(BasePage):
     def build_content(self) -> Column:
         return Column(
             controls=[
-                self._build_section("文本输入", self._build_text_inputs()),
-                self._build_section("下拉选择", self._build_dropdowns()),
-                self._build_section("复选框", self._build_checkboxes()),
-                self._build_section("单选框", self._build_radios()),
-                self._build_section("开关", self._build_switches()),
-                self._build_section("滑块", self._build_sliders()),
+                self.build_section("文本输入", self._build_text_inputs()),
+                self.build_section("下拉选择", self._build_dropdowns()),
+                self.build_section("复选框", self._build_checkboxes()),
+                self.build_section("单选框", self._build_radios()),
+                self.build_section("开关", self._build_switches()),
+                self.build_section("滑块", self._build_sliders()),
                 ],
             scroll="auto",
             spacing=20,
         )
-
-    def _build_section(self, title: str, content: Container) -> Container:
-        return Container(
-            content=Column(
-                controls=[
-                    Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
-                    content,
-                ],
-                spacing=10,
-            ),
-            bgcolor=self.theme_colors.card_color,
-            padding=30,
-            border_radius=border_radius.all(10),
-            margin=padding.symmetric(horizontal=20),
-        )
-
+        
     def _build_text_inputs(self) -> Container:
         return Container(
             content=Column(

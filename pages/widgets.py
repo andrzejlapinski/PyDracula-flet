@@ -39,6 +39,7 @@ class WidgetsPage(BasePage):
             bgcolor=self.theme_colors.card_color,
             padding=30,
             border_radius=border_radius.all(10),
+            border=border.all(1, self.theme_colors.divider_color),  # 添加轮廓线
             margin=padding.symmetric(horizontal=20),
         )
 
