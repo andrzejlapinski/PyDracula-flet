@@ -17,6 +17,7 @@ PyDracula 是一个基于 PyQt5 构建的现代化桌面应用程序模版[PyDra
 
 ## 图片预览
 ![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/index.png)
+![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/index_2.png)
 
 ## 安装
 

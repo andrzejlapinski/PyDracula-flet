@@ -65,23 +65,19 @@ class SettingsPage(BasePage):
                     ),
                 ),
                 self._build_section(
-                    "语言/窗口 设置",
+                    "窗口设置",
                     Row(
                         controls=[
-                            Dropdown(
-                                label="界面语言",
-                            width=200,
-                            options=[
-                                dropdown.Option("zh_CN", "简体中文"),
-                                dropdown.Option("en_US", "English"),
-                            ],
-                            value=self.config_manager.get("App", "language", "zh_CN"),
-                            on_change=on_language_change,
-                            ),
-                            VerticalDivider(
-                                width=20, 
-                                color=self.theme_colors.divider_color,
-                            ),
+                            # Dropdown(
+                            #     label="界面语言",
+                            # width=200,
+                            # options=[
+                            #     dropdown.Option("zh_CN", "简体中文"),
+                            #     dropdown.Option("en_US", "English"),
+                            # ],
+                            # value=self.config_manager.get("App", "language", "zh_CN"),
+                            # on_change=on_language_change,
+                            # ),
                             Column(
                                 controls=[
                                     Row(
