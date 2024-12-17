@@ -1,9 +1,4 @@
-from flet import (
-    Column, Container, Row, Text, padding, border_radius,
-    TextField, Dropdown, Checkbox, Radio, Switch, Slider,
-    dropdown, IconButton, Icons, Colors, alignment,
-    MainAxisAlignment, TimePicker, ElevatedButton
-)
+import flet as ft
 from core.base_page import BasePage
 
 class InputsPage(BasePage):
@@ -16,8 +11,8 @@ class InputsPage(BasePage):
             self.time_mode_text.value = f"输入模式变更为: {e.entry_mode}"
             self.time_mode_text.update()
 
-    def build_content(self) -> Column:
-        return Column(
+    def build_content(self) -> ft.Column:
+        return ft.Column(
             controls=[
                 self.build_section("文本输入", self._build_text_inputs()),
                 self.build_section("下拉选择", self._build_dropdowns()),
@@ -30,26 +25,26 @@ class InputsPage(BasePage):
             spacing=20,
         )
         
-    def _build_text_inputs(self) -> Container:
-        return Container(
-            content=Column(
+    def _build_text_inputs(self) -> ft.Container:
+        return ft.Container(
+            content=ft.Column(
                 controls=[
-                    TextField(
+                    ft.TextField(
                         label="基本输入框",
                         hint_text="请输入...",
                     ),
-                    TextField(
+                    ft.TextField(
                         label="带图标的输入框",
                         hint_text="搜索...",
-                        prefix_icon=Icons.SEARCH,
-                        suffix_icon=Icons.CLEAR,
+                        prefix_icon=ft.Icons.SEARCH,
+                        suffix_icon=ft.Icons.CLEAR,
                     ),
-                    TextField(
+                    ft.TextField(
                         label="密码输入框",
                         password=True,
                         can_reveal_password=True,
                     ),
-                    TextField(
+                    ft.TextField(
                         label="多行输入框",
                         multiline=True,
                         min_lines=3,
@@ -60,38 +55,38 @@ class InputsPage(BasePage):
             ),
         )
 
-    def _build_dropdowns(self) -> Container:
+    def _build_dropdowns(self) -> ft.Container:
         """下拉选择示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
                     # 基本下拉框
-                    Dropdown(
+                    ft.Dropdown(
                         label="基本下拉框",
                         options=[
-                            dropdown.Option("选项1"),
-                            dropdown.Option("选项2"),
-                            dropdown.Option("选项3"),
+                            ft.dropdown.Option("选项1"),
+                            ft.dropdown.Option("选项2"),
+                            ft.dropdown.Option("选项3"),
                         ],
                         width=200,
                     ),
                     # 使用前缀图标的下拉框
-                    Dropdown(
+                    ft.Dropdown(
                         label="带图标的下拉框",
-                        prefix_icon=Icons.SETTINGS,
+                        prefix_icon=ft.Icons.SETTINGS,
                         options=[
-                            dropdown.Option("编辑"),
-                            dropdown.Option("删除"),
-                            dropdown.Option("保存"),
+                            ft.dropdown.Option("编辑"),
+                            ft.dropdown.Option("删除"),
+                            ft.dropdown.Option("保存"),
                         ],
                         width=200,
                     ),
                     # 禁用状态的下拉框
-                    Dropdown(
+                    ft.Dropdown(
                         label="禁用状态",
                         options=[
-                            dropdown.Option("选项1"),
-                            dropdown.Option("选项2"),
+                            ft.dropdown.Option("选项1"),
+                            ft.dropdown.Option("选项2"),
                         ],
                         width=200,
                         disabled=True,
@@ -101,54 +96,54 @@ class InputsPage(BasePage):
             ),
         )
 
-    def _build_checkboxes(self) -> Container:
-        return Container(
-            content=Column(
+    def _build_checkboxes(self) -> ft.Container:
+        return ft.Container(
+            content=ft.Column(
                 controls=[
-                    Checkbox(label="基本复选框"),
-                    Checkbox(label="默认选中", value=True),
-                    Checkbox(label="三态复选框", tristate=True),
-                    Checkbox(label="禁用状态", disabled=True),
+                    ft.Checkbox(label="基本复选框"),
+                    ft.Checkbox(label="默认选中", value=True),
+                    ft.Checkbox(label="三态复选框", tristate=True),
+                    ft.Checkbox(label="禁用状态", disabled=True),
                 ],
                 spacing=10,
             ),
         )
 
-    def _build_radios(self) -> Container:
-        return Container(
-            content=Row(
+    def _build_radios(self) -> ft.Container:
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    Radio(value="option1", label="选项1"),
-                    Radio(value="option2", label="选项2"),
-                    Radio(value="option3", label="选项3", disabled=True),
+                    ft.Radio(value="option1", label="选项1"),
+                    ft.Radio(value="option2", label="选项2"),
+                    ft.Radio(value="option3", label="选项3", disabled=True),
                 ],
                 spacing=10,
             ),
         )
 
-    def _build_switches(self) -> Container:
-        return Container(
-            content=Row(
+    def _build_switches(self) -> ft.Container:
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    Switch(label="基本开关"),
-                    Switch(label="默认开启", value=True),
-                    Switch(label="禁用状态", disabled=True),
+                    ft.Switch(label="基本开关"),
+                    ft.Switch(label="默认开启", value=True),
+                    ft.Switch(label="禁用状态", disabled=True),
                 ],
                 spacing=20,
             ),
         )
 
-    def _build_sliders(self) -> Container:
-        return Container(
-            content=Column(
+    def _build_sliders(self) -> ft.Container:
+        return ft.Container(
+            content=ft.Column(
                 controls=[
-                    Slider(
+                    ft.Slider(
                         min=0,
                         max=100,
                         value=40,
                         label="{value}%",
                     ),
-                    Slider(
+                    ft.Slider(
                         min=0,
                         max=100,
                         value=60,

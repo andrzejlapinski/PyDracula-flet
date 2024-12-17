@@ -4,12 +4,17 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 
 [PyDracula](https://github.com/Wanderson-Magalhaes/Modern_GUI_PyDracula_PySide6_or_PyQt6) 是一个基于 PyQt5 构建的现代化桌面应用程序模版。
 
+
+## 注意事项
+1. 项目主要在macos开发，windows可能存在一些问题，我会在windows上测试，如果存在问题，我会及时修复。
+
+2. 主题配色，我在macos上测试，windows 的颜色和对比度差异可能比较大，您可以在 `core/theme.py` 中修改颜色，以适应您的windows系统。
+
 ## 特性
 
 - 🌓 深色/浅色主题支持
 - 📱 响应式布局
 - 🎯 可配置的导航栏
-- 🌍 多语言支持
 - ⚙️ 配置持久化
 - 🎨 现代化 UI 设计
 - 🎢 添加轮播图组件

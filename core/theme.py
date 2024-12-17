@@ -4,11 +4,11 @@ from dataclasses import dataclass
 class ThemeColors:
     def __init__(self, is_dark: bool = True):
         if is_dark:
-            self.title_bar_color = "#393E46"
-            self.bg_color = "#222831"
-            self.nav_color = "#393E46"
-            self.card_color = "#393E46"
-            self.divider_color = "#1A1A1D"
+            self.title_bar_color = "#1E2228"
+            self.bg_color = "#141518"
+            self.nav_color = "#1E2228"
+            self.card_color = "#1E2228"
+            self.divider_color = "#0A0A0C"
             self.text_color = "#EEEEEE"
         else:
             self.title_bar_color = "#E9E9E9"  # 标题栏背景色 

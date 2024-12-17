@@ -1,9 +1,4 @@
-from flet import (
-    Column, Container, Row, Text, RadioGroup, Radio, 
-    padding, border_radius, Switch, Dropdown, dropdown,
-    TextField, ElevatedButton, Icons, VerticalDivider,
-    TextButton, MainAxisAlignment, Icon
-)
+import flet as ft
 from core.base_page import BasePage
 from config.version import VERSION, APP_DESCRIPTION, GITHUB_URL
 
@@ -12,7 +7,7 @@ class SettingsPage(BasePage):
         self.config_manager = config_manager
         super().__init__(title="设置", **kwargs)
 
-    def build_content(self) -> Column:
+    def build_content(self) -> ft.Column:
         def on_theme_change(e):
             if self.on_theme_changed:
                 self.on_theme_changed(e.control.value)
@@ -35,28 +30,28 @@ class SettingsPage(BasePage):
                 except ValueError:
                     pass
 
-        return Column(
+        return ft.Column(
             controls=[
                 # 主题设置
                 self.build_section(
                     "主题设置",
-                    Column(
+                    ft.Column(
                         controls=[
-                            Text("主题模式", size=16, color=self.theme_colors.text_color),
-                            RadioGroup(
-                                content=Column(
+                            ft.Text("主题模式", size=16, color=self.theme_colors.text_color),
+                            ft.RadioGroup(
+                                content=ft.Column(
                                     controls=[
-                                        Radio(value="dark", label="深色主题"),
-                                        Radio(value="light", label="浅色主题"),
-                                        Radio(value="system", label="跟随系统"),
+                                        ft.Radio(value="dark", label="深色主题"),
+                                        ft.Radio(value="light", label="浅色主题"),
+                                        ft.Radio(value="system", label="跟随系统"),
                                     ]
                                 ),
                                 value=self.theme_mode,
                                 on_change=on_theme_change,
                             ),
-                            Container(height=20),
-                            Text("导航栏", size=16, color=self.theme_colors.text_color),
-                            Switch(
+                            ft.Container(height=20),
+                            ft.Text("导航栏", size=16, color=self.theme_colors.text_color),
+                            ft.Switch(
                                 label="默认展开导航栏",
                                 value=self.config_manager.get("Theme", "nav_rail_extended", "true").lower() == "true",
                                 on_change=on_nav_extended_change,
@@ -66,30 +61,20 @@ class SettingsPage(BasePage):
                 ),
                 self.build_section(
                     "窗口设置",
-                    Row(
+                    ft.Row(
                         controls=[
-                            # Dropdown(
-                            #     label="界面语言",
-                            # width=200,
-                            # options=[
-                            #     dropdown.Option("zh_CN", "简体中文"),
-                            #     dropdown.Option("en_US", "English"),
-                            # ],
-                            # value=self.config_manager.get("App", "language", "zh_CN"),
-                            # on_change=on_language_change,
-                            # ),
-                            Column(
+                            ft.Column(
                                 controls=[
-                                    Row(
+                                    ft.Row(
                                         controls=[
-                                            TextField(
+                                            ft.TextField(
                                                 label="默认宽度",
                                                 value=self.config_manager.get("Window", "width", "1300"),
                                                 width=150,
                                                 data="width",
                                                 on_change=on_window_size_change,
                                             ),
-                                            TextField(
+                                            ft.TextField(
                                                 label="默认高度",
                                                 value=self.config_manager.get("Window", "height", "800"),
                                                 width=150,
@@ -99,16 +84,16 @@ class SettingsPage(BasePage):
                                         ],
                                         spacing=20,
                                     ),
-                                    Row(
+                                    ft.Row(
                                         controls=[
-                                            TextField(
+                                            ft.TextField(
                                                 label="最小宽度",
                                                 value=self.config_manager.get("Window", "min_width", "500"),
                                                 width=150,
                                                 data="min_width",
                                                 on_change=on_window_size_change,
                                             ),
-                                            TextField(
+                                            ft.TextField(
                                                 label="最小高度",
                                                 value=self.config_manager.get("Window", "min_height", "400"),
                                                 width=150,
@@ -128,19 +113,19 @@ class SettingsPage(BasePage):
                 # 添加关于部分
                 self.build_section(
                     "关于",
-                    Column(
+                    ft.Column(
                         controls=[
-                            Row(
+                            ft.Row(
                                 controls=[
-                                    Column(
+                                    ft.Column(
                                         controls=[
-                                            Text(
+                                            ft.Text(
                                                 "PyDracula",
                                                 size=30,
                                                 weight="bold",
                                                 color=self.theme_colors.text_color,
                                             ),
-                                            Text(
+                                            ft.Text(
                                                 f"Version {VERSION}",
                                                 size=16,
                                                 color=self.theme_colors.text_color,
@@ -148,35 +133,35 @@ class SettingsPage(BasePage):
                                             ),
                                         ],
                                     ),
-                                    Container(expand=True),
-                                    TextButton(
+                                    ft.Container(expand=True),
+                                    ft.TextButton(
                                         "访问 GitHub",
-                                        icon=Icons.OPEN_IN_NEW,
+                                        icon=ft.Icons.OPEN_IN_NEW,
                                         url=GITHUB_URL,
                                     ),
                                 ],
-                                alignment=MainAxisAlignment.SPACE_BETWEEN,
+                                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                             ),
-                            Container(height=20),
-                            Text(
+                            ft.Container(height=20),
+                            ft.Text(
                                 APP_DESCRIPTION,
                                 size=14,
                                 color=self.theme_colors.text_color,
                                 opacity=0.7,
                             ),
-                            Container(height=10),
-                            Row(
+                            ft.Container(height=10),
+                            ft.Row(
                                 controls=[
-                                    Container(
-                                        content=Row(
+                                    ft.Container(
+                                        content=ft.Row(
                                             controls=[
-                                                Icon(
-                                                    Icons.COPYRIGHT,
+                                                ft.Icon(
+                                                    ft.Icons.COPYRIGHT,
                                                     color=self.theme_colors.text_color,
                                                     opacity=0.5,
                                                     size=16,
                                                 ),
-                                                Text(
+                                                ft.Text(
                                                     "2024 calg",
                                                     size=14,
                                                     color=self.theme_colors.text_color,
@@ -186,14 +171,14 @@ class SettingsPage(BasePage):
                                             spacing=5,
                                         ),
                                     ),
-                                    Container(expand=True),
-                                    TextButton(
+                                    ft.Container(expand=True),
+                                    ft.TextButton(
                                         "检查更新",
-                                        icon=Icons.SYSTEM_UPDATE,
+                                        icon=ft.Icons.SYSTEM_UPDATE,
                                         on_click=self._check_updates,
                                     ),
                                 ],
-                                alignment=MainAxisAlignment.SPACE_BETWEEN,
+                                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                             ),
                         ],
                         spacing=10,
@@ -206,9 +191,4 @@ class SettingsPage(BasePage):
 
     def _check_updates(self, e):
         """检查更新"""
-        # 这里可以添加检查更新的逻辑
-        # 例如：
-        # 1. 从远程服务器获取最新版本
-        # 2. 与当前版本比较
-        # 3. 显示更新对话框
-        pass 
+        pass

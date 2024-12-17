@@ -1,10 +1,11 @@
+import flet as ft
 from abc import ABC, abstractmethod
 from typing import Callable
 from flet import Container, Column, Text, padding, margin, Page, border, border_radius
 from .theme import ThemeColors
 
 class BasePage(ABC):
-    def __init__(self, on_theme_changed: Callable = None, theme_colors: ThemeColors = None, theme_mode: str = "dark", title: str = "", page: Page = None):
+    def __init__(self, on_theme_changed: Callable = None, theme_colors: ThemeColors = None, theme_mode: str = "dark", title: str = "", page: ft.Page = None):
         self.on_theme_changed = on_theme_changed
         self.theme_colors = theme_colors or ThemeColors()
         self.theme_mode = theme_mode

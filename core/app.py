@@ -1,7 +1,4 @@
-from flet import (
-    Page, Column, Row, Container, ThemeMode, VerticalDivider, 
-    padding, margin, Icons, colors, BoxShadow, Offset, border_radius, NavigationRail, NavigationRailDestination, IconButton, Text, Colors, GestureDetector, MainAxisAlignment
-)
+import flet as ft
 from typing import Callable, Dict, Any, List
 from .theme import ThemeColors
 from .base_page import BasePage
@@ -49,43 +46,43 @@ class NavRail:
         self.selected_index = selected_index
         self.app_title = app_title
 
-    def build(self) -> NavigationRail:
+    def build(self) -> ft.NavigationRail:
         """
         构建并返回导航栏对象。
         """
-        return NavigationRail(
+        return ft.NavigationRail(
             selected_index=self.selected_index,
             label_type="selected" if self.is_extended else "none",
             min_width=60,
             min_extended_width=200,
             extended=self.is_extended,
             bgcolor=self.theme_colors.nav_color,
-            leading=Container(
-                content=Text(
+            leading=ft.Container(
+                content=ft.Text(
                     f" {self.app_title} " if self.is_extended else self.app_title[0],
                     size=30,
                     weight="bold",
                     color="#89A8B2"
                 ),
-                margin=padding.only(top=20, bottom=20),
+                margin=ft.padding.only(top=20, bottom=20),
                 padding=0,
             ),
             destinations=[
-                NavigationRailDestination(
+                ft.NavigationRailDestination(
                     icon=item["icon"],
                     selected_icon=item["icon"],
                     label=item["label"],
-                    padding=padding.only(left=10) if self.is_extended else None,
+                    padding=ft.padding.only(left=10) if self.is_extended else None,
                 ) for item in self.nav_items
             ],
             on_change=self.on_change,
-            trailing=Container(
-                content=IconButton(
-                    icon=Icons.CHEVRON_LEFT if self.is_extended else Icons.CHEVRON_RIGHT,
+            trailing=ft.Container(
+                content=ft.IconButton(
+                    icon=ft.Icons.CHEVRON_LEFT if self.is_extended else ft.Icons.CHEVRON_RIGHT,
                     icon_color=self.theme_colors.text_color,
                     on_click=self.on_toggle,
                 ),
-                margin=padding.only(bottom=20),
+                margin=ft.padding.only(bottom=20),
             ),
         ) 
 
@@ -97,7 +94,7 @@ class TitleBar:
         self.on_update = on_update
         self.platform = platform
         
-    def build(self) -> Container:
+    def build(self) -> ft.Container:
         def minimize(e):
             self.window.minimized = True
             self.on_update()
@@ -110,15 +107,10 @@ class TitleBar:
             self.window.close()
             self.on_update()
             
-        def handle_double_tap(e):
-            # 双击切换最大化/还原状态
-            self.window.maximized = not self.window.maximized
-            self.on_update()
-            
         # 创建标题文本部分
-        title_content = Row([
-            Container(width=10),  # 左侧间距
-            Text(
+        title_content = ft.Row([
+            ft.Container(width=10),  # 左侧间距
+            ft.Text(
                 self.app_title if self.platform != "macos" else "",
                 size=14,
                 weight="bold",
@@ -128,38 +120,35 @@ class TitleBar:
         
         controls = [
             # 添加窗口拖动区域，使用 GestureDetector 处理双击
-            GestureDetector(
-                content=Container(
-                    content=title_content,
-                    expand=True,
-                    data="window-drag",  # 标记为可拖动区域
-                ),
-                on_double_tap=handle_double_tap,
+            ft.Container(
+                content=title_content,
+                expand=True,
+                data="window-drag-area",  # 标记为可拖动区域
             ),
         ]
         
         # 在非 macOS 平台上添加窗口控制按钮
         if self.platform != "macos":
             controls.append(
-                Container(
-                    content=Row(
+                ft.Container(
+                    content=ft.Row(
                         controls=[
-                            IconButton(
-                                icon=Icons.REMOVE,
+                            ft.IconButton(
+                                icon=ft.Icons.REMOVE,
                                 icon_size=20,
                                 icon_color=self.theme_colors.text_color,
                                 tooltip="最小化",
                                 on_click=minimize,
                             ),
-                            IconButton(
-                                icon=Icons.CROP_DIN if self.window.maximized else Icons.CROP_SQUARE,
+                            ft.IconButton(
+                                icon=ft.Icons.CROP_DIN if self.window.maximized else ft.Icons.CROP_SQUARE,
                                 icon_size=20,
                                 icon_color=self.theme_colors.text_color,
                                 tooltip="还原" if self.window.maximized else "最大化",
                                 on_click=maximize,
                             ),
-                            IconButton(
-                                icon=Icons.CLOSE,
+                            ft.IconButton(
+                                icon=ft.Icons.CLOSE,
                                 icon_size=20,
                                 icon_color=self.theme_colors.text_color,
                                 tooltip="关闭",
@@ -167,25 +156,25 @@ class TitleBar:
                             ),
                         ],
                         spacing=0,
-                        alignment=MainAxisAlignment.END,
+                        alignment=ft.MainAxisAlignment.END,
                     ),
-                    padding=padding.only(right=10),
+                    padding=ft.padding.only(right=10),
                     expand=False,
                 ),
             )
             
         # 使用 GestureDetector 包装整个标题栏
-        return GestureDetector(
-            content=Container(
-                content=Row(
+        return ft.WindowDragArea(
+            content=ft.Container(
+                content=ft.Row(
                     controls=controls,
                     spacing=0,
-                    alignment=MainAxisAlignment.SPACE_BETWEEN,
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 ),
                 bgcolor=self.theme_colors.title_bar_color,
                 height=40,
+                data="window-drag-area",  # 标记整个标题栏为可拖动区域
             ),
-            on_double_tap=handle_double_tap,
         )
 
 class App:
@@ -217,31 +206,28 @@ class App:
         self.page.window.min_width = self.config.window_min_width
         self.page.window.min_height = self.config.window_min_height
         
-        # 根据平台设置标题栏
-        if self.platform == "macos":
-            self.page.window.title_bar_hidden = True
-        else:
-            # 其他平台: 隐藏原生标题栏
-            self.page.window.title_bar_hidden = True
-            self.page.window.frameless = True
-        
+        # 隐藏标题栏
+        self.page.window.title_bar_hidden = True
+
         # 设置窗口透明和阴影效果
-        self.page.window.bgcolor = Colors.TRANSPARENT
-        self.page.bgcolor = Colors.TRANSPARENT
+        self.page.window.bgcolor = ft.Colors.TRANSPARENT
+        self.page.bgcolor = ft.Colors.TRANSPARENT
         self.page.padding = 15
         
         # 创建一个带阴影的主容器
-        self.main_container = Container(
+        self.main_container = ft.Container(
             content=self._create_layout(),
             bgcolor=self.theme_colors.bg_color,
             border_radius=10,
-            shadow=BoxShadow(
+            shadow=ft.BoxShadow(
                 spread_radius=2,
                 blur_radius=20,
                 color="#66000000",  # 增加阴影不透明度
-                offset=Offset(0, 3),
+                offset=ft.Offset(0, 3),
             ),
             expand=True,
+            # 添加窗口调整大小的功能
+            data="window-resizable",
         )
         
         # 设置窗口位置
@@ -251,9 +237,9 @@ class App:
         """初始化主题设置"""
         # 根据配置设置主题模式
         if self.config.theme_mode == "system":
-            self.page.theme_mode = ThemeMode.DARK if self.page.platform_brightness == "dark" else ThemeMode.LIGHT
+            self.page.theme_mode = ft.ThemeMode.DARK if self.page.platform_brightness == "dark" else ft.ThemeMode.LIGHT
         else:
-            self.page.theme_mode = ThemeMode.DARK if self.config.theme_mode == "dark" else ThemeMode.LIGHT
+            self.page.theme_mode = ft.ThemeMode.DARK if self.config.theme_mode == "dark" else ft.ThemeMode.LIGHT
             
         self.page.bgcolor = self.theme_colors.bg_color
         self.page.padding = 0
@@ -285,24 +271,24 @@ class App:
 
         # 添加主要内容区域
         controls.append(
-            Container(
-                content=Row(
+            ft.Container(
+                content=ft.Row(
                     controls=[
-                        Container(
+                        ft.Container(
                             content=nav_rail.build(),
                             padding=0,
                         ),
-                        Container(
-                            content=VerticalDivider(
+                        ft.Container(
+                            content=ft.VerticalDivider(
                                 width=1,
                                 color=self.theme_colors.divider_color,
                             ),
-                            padding=padding.only(left=0, right=0),
-                            margin=margin.all(0),
+                            padding=ft.padding.only(left=0, right=0),
+                            margin=ft.margin.all(0),
                         ),
-                        Container(
+                        ft.Container(
                             content=self.content_area,
-                            padding=padding.only(left=10),
+                            padding=ft.padding.only(left=10),
                             expand=True,
                         ),
                     ],
@@ -313,7 +299,7 @@ class App:
             )
         )
 
-        return Column(
+        return ft.Column(
             controls=controls,
             spacing=0,
             expand=True,
@@ -336,7 +322,7 @@ class App:
         self.main_container.content = self._create_layout()
         self.page.update()
 
-    def init_page(self, page: Page):
+    def init_page(self, page: ft.Page):
         """初始化页面"""
         self.page = page
         self.platform = self.page.platform.value
@@ -370,7 +356,7 @@ class App:
         self.nav_items.append(nav_item)
         
         if self.content_area is None:
-            self.content_area = Container(
+            self.content_area = ft.Container(
                 content=page.content,
                 expand=True,
                 bgcolor=self.theme_colors.bg_color,
@@ -379,7 +365,7 @@ class App:
     def add_exit_nav(self):
         """添加退出导航项"""
         self.nav_items.append({
-            "icon": Icons.EXIT_TO_APP,
+            "icon": ft.Icons.EXIT_TO_APP,
             "label": "退出"
         })
 
@@ -389,10 +375,10 @@ class App:
         
         # 更新主题模式
         if theme_mode == "system":
-            self.page.theme_mode = ThemeMode.DARK if self.page.platform_brightness == "dark" else ThemeMode.LIGHT
+            self.page.theme_mode = ft.ThemeMode.DARK if self.page.platform_brightness == "dark" else ft.ThemeMode.LIGHT
             is_dark = self.page.platform_brightness == "dark"
         else:
-            self.page.theme_mode = ThemeMode.DARK if theme_mode == "dark" else ThemeMode.LIGHT
+            self.page.theme_mode = ft.ThemeMode.DARK if theme_mode == "dark" else ft.ThemeMode.LIGHT
             is_dark = theme_mode == "dark"
         
         # 更新主题颜色

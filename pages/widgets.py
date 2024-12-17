@@ -1,18 +1,12 @@
-from flet import (
-    Column, Container, Row, Text, padding, border_radius,
-    ElevatedButton, FilledButton, FloatingActionButton, IconButton,
-    MenuItemButton, OutlinedButton, PopupMenuButton, SegmentedButton,
-    SubmenuButton, TextButton, Icon, Icons, PopupMenuItem,
-    Colors, alignment, MainAxisAlignment, border, ButtonStyle, RoundedRectangleBorder
-)
+import flet as ft
 from core.base_page import BasePage
 
 class WidgetsPage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="组件", **kwargs)
 
-    def build_content(self) -> Column:
-        return Column(
+    def build_content(self) -> ft.Column:
+        return ft.Column(
             controls=[
                 self._build_section("填充按钮", self._build_filled_buttons()),
                 self._build_section("浮动操作按钮", self._build_floating_buttons()),
@@ -26,34 +20,34 @@ class WidgetsPage(BasePage):
             spacing=20,
         )
 
-    def _build_section(self, title: str, content: Container) -> Container:
+    def _build_section(self, title: str, content: ft.Container) -> ft.Container:
         """构建一个带标题的部分"""
-        return Container(
-            content=Column(
+        return ft.Container(
+            content=ft.Column(
                 controls=[
-                    Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
+                    ft.Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
                     content,
                 ],
                 spacing=10,
             ),
             bgcolor=self.theme_colors.card_color,
             padding=30,
-            border_radius=border_radius.all(10),
-            border=border.all(1, self.theme_colors.divider_color),  # 添加轮廓线
-            margin=padding.symmetric(horizontal=20),
+            border_radius=ft.border_radius.all(10),
+            border=ft.border.all(1, self.theme_colors.divider_color),
+            margin=ft.padding.symmetric(horizontal=20),
         )
 
-    def _build_filled_buttons(self) -> Container:
+    def _build_filled_buttons(self) -> ft.Container:
         """填充按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    FilledButton(text="基本按钮"),
-                    FilledButton(
+                    ft.FilledButton(text="基本按钮"),
+                    ft.FilledButton(
                         text="带图标的按钮",
-                        icon=Icons.ADD,
+                        icon=ft.Icons.ADD,
                     ),
-                    FilledButton(
+                    ft.FilledButton(
                         text="禁用按钮",
                         disabled=True,
                     ),
@@ -62,23 +56,23 @@ class WidgetsPage(BasePage):
             ),
         )
 
-    def _build_floating_buttons(self) -> Container:
+    def _build_floating_buttons(self) -> ft.Container:
         """浮动操作按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    FloatingActionButton(
-                        icon=Icons.ADD,
+                    ft.FloatingActionButton(
+                        icon=ft.Icons.ADD,
                         tooltip="添加",
                     ),
-                    FloatingActionButton(
+                    ft.FloatingActionButton(
                         text="Extended",
-                        icon=Icons.ADD,
+                        icon=ft.Icons.ADD,
                         tooltip="扩展的浮动按钮",
                     ),
-                    FloatingActionButton(
-                        icon=Icons.EDIT,
-                        bgcolor=Colors.GREEN,
+                    ft.FloatingActionButton(
+                        icon=ft.Icons.EDIT,
+                        bgcolor=ft.Colors.GREEN,
                         tooltip="编辑",
                     ),
                 ],
@@ -86,24 +80,24 @@ class WidgetsPage(BasePage):
             ),
         )
 
-    def _build_icon_buttons(self) -> Container:
+    def _build_icon_buttons(self) -> ft.Container:
         """图标按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    IconButton(
-                        icon=Icons.FAVORITE_BORDER,
+                    ft.IconButton(
+                        icon=ft.Icons.FAVORITE_BORDER,
                         icon_color="red",
                         icon_size=30,
                         tooltip="收藏",
                     ),
-                    IconButton(
-                        icon=Icons.SHARE,
+                    ft.IconButton(
+                        icon=ft.Icons.SHARE,
                         icon_size=30,
                         tooltip="分享",
                     ),
-                    IconButton(
-                        icon=Icons.DELETE,
+                    ft.IconButton(
+                        icon=ft.Icons.DELETE,
                         icon_size=30,
                         tooltip="删除",
                         disabled=True,
@@ -113,69 +107,66 @@ class WidgetsPage(BasePage):
             ),
         )
 
-    def _build_menu_buttons(self) -> Container:
+    def _build_menu_buttons(self) -> ft.Container:
         """菜单按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    # 基本的弹出菜单
-                    PopupMenuButton(
-                        icon=Icons.MENU,
+                    ft.PopupMenuButton(
+                        icon=ft.Icons.MENU,
                         items=[
-                            PopupMenuItem(text="选项 1"),
-                            PopupMenuItem(text="选项 2"),
-                            PopupMenuItem(text="选项 3"),
+                            ft.PopupMenuItem(text="选项 1"),
+                            ft.PopupMenuItem(text="选项 2"),
+                            ft.PopupMenuItem(text="选项 3"),
                         ],
                     ),
-                    # 带图标的弹出菜单
-                    PopupMenuButton(
-                        icon=Icons.MORE_VERT,
+                    ft.PopupMenuButton(
+                        icon=ft.Icons.MORE_VERT,
                         items=[
-                            PopupMenuItem(
+                            ft.PopupMenuItem(
                                 text="设置",
-                                icon=Icons.SETTINGS,
+                                icon=ft.Icons.SETTINGS,
                             ),
-                            PopupMenuItem(),  # 分隔线
-                            PopupMenuItem(
+                            ft.PopupMenuItem(),
+                            ft.PopupMenuItem(
                                 text="删除",
-                                icon=Icons.DELETE,
+                                icon=ft.Icons.DELETE,
                             ),
                         ],
                     ),
-                    # 自定义样式的弹出菜单
-                    Container(
-                        content=PopupMenuButton(
-                            content=Row(
+                    ft.Container(
+                        content=ft.PopupMenuButton(
+                            content=ft.Row(
                                 controls=[
-                                    Icon(Icons.ARROW_DROP_DOWN),
-                                    Text("更多选项"),
+                                    ft.Icon(ft.Icons.ARROW_DROP_DOWN),
+                                    ft.Text("更多选项"),
                                 ],
                             ),
                             items=[
-                                PopupMenuItem(text="子选项 1"),
-                                PopupMenuItem(text="子选项 2"),
+                                ft.PopupMenuItem(text="子选项 1"),
+                                ft.PopupMenuItem(text="子选项 2"),
                             ],
                         ),
-                        border=border.all(1, Colors.BLUE),
-                        border_radius=border_radius.all(4),
-                        padding=padding.all(8),
+                        border=ft.border.all(1, ft.Colors.BLUE),
+                        border_radius=ft.border_radius.all(4),
+                        padding=ft.padding.all(8),
                     ),
                 ],
                 spacing=10,
             ),
         )
 
-    def _build_outlined_buttons(self) -> Container:
+    def _build_outlined_buttons(self) -> ft.Container:
         """轮廓按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    OutlinedButton(text="基本轮廓按钮"),
-                    OutlinedButton(
+                    ft.OutlinedButton(text="基本轮廓按钮"),
+                    ft.OutlinedButton(
                         text="带图标",
-                        icon=Icons.SETTINGS,
+                        icon=ft.Icons.SETTINGS,
                     ),
-                    OutlinedButton(
+                    ft.OutlinedButton(
                         text="禁用",
                         disabled=True,
                     ),
@@ -184,58 +175,57 @@ class WidgetsPage(BasePage):
             ),
         )
 
-    def _build_segmented_buttons(self) -> Container:
+    def _build_segmented_buttons(self) -> ft.Container:
         """分段按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    # 使用多个按钮模拟分段按钮
-                    Container(
-                        content=Row(
+                    ft.Container(
+                        content=ft.Row(
                             controls=[
-                                OutlinedButton(
+                                ft.OutlinedButton(
                                     text="日",
-                                    icon=Icons.CALENDAR_VIEW_DAY,
-                                    style=ButtonStyle(
-                                        shape=RoundedRectangleBorder(radius=0),
+                                    icon=ft.Icons.CALENDAR_VIEW_DAY,
+                                    style=ft.ButtonStyle(
+                                        shape=ft.RoundedRectangleBorder(radius=0),
                                     ),
                                 ),
-                                OutlinedButton(
+                                ft.OutlinedButton(
                                     text="周",
-                                    icon=Icons.CALENDAR_VIEW_WEEK,
-                                    style=ButtonStyle(
-                                        shape=RoundedRectangleBorder(radius=0),
+                                    icon=ft.Icons.CALENDAR_VIEW_WEEK,
+                                    style=ft.ButtonStyle(
+                                        shape=ft.RoundedRectangleBorder(radius=0),
                                     ),
                                 ),
-                                OutlinedButton(
+                                ft.OutlinedButton(
                                     text="月",
-                                    icon=Icons.CALENDAR_VIEW_MONTH,
-                                    style=ButtonStyle(
-                                        shape=RoundedRectangleBorder(radius=0),
+                                    icon=ft.Icons.CALENDAR_VIEW_MONTH,
+                                    style=ft.ButtonStyle(
+                                        shape=ft.RoundedRectangleBorder(radius=0),
                                     ),
                                 ),
                             ],
                             spacing=0,
                         ),
-                        border=border.all(1, Colors.BLUE),
-                        border_radius=border_radius.all(4),
+                        border=ft.border.all(1, ft.Colors.BLUE),
+                        border_radius=ft.border_radius.all(4),
                     ),
                 ],
                 spacing=10,
             ),
         )
 
-    def _build_text_buttons(self) -> Container:
+    def _build_text_buttons(self) -> ft.Container:
         """文本按钮示例"""
-        return Container(
-            content=Row(
+        return ft.Container(
+            content=ft.Row(
                 controls=[
-                    TextButton(text="基本文本按钮"),
-                    TextButton(
+                    ft.TextButton(text="基本文本按钮"),
+                    ft.TextButton(
                         text="带图标",
-                        icon=Icons.INFO,
+                        icon=ft.Icons.INFO,
                     ),
-                    TextButton(
+                    ft.TextButton(
                         text="禁用",
                         disabled=True,
                     ),

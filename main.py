@@ -1,5 +1,4 @@
 import flet as ft
-from flet import Icons
 from core.app import App, AppConfig
 from pages.home import HomePage
 from pages.widgets import WidgetsPage
@@ -12,6 +11,11 @@ from core.config_manager import ConfigManager
 def main(page: ft.Page):
     # 设置资源目录
     page.assets_dir = "assets"
+    
+    # 设置字体
+    page.theme = ft.Theme(
+        font_family="Microsoft YaHei UI, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+    )
     
     # 创建配置管理器
     config_manager = ConfigManager()
@@ -31,27 +35,27 @@ def main(page: ft.Page):
     
     # 注册页面和导航项
     app.register_page(
-        nav_item={"icon": Icons.HOME_ROUNDED, "label": "主页"},
+        nav_item={"icon": ft.Icons.HOME_ROUNDED, "label": "主页"},
         page=HomePage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
-        nav_item={"icon": Icons.WIDGETS_ROUNDED, "label": "按钮组件"},
+        nav_item={"icon": ft.Icons.WIDGETS_ROUNDED, "label": "按钮组件"},
         page=WidgetsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
-        nav_item={"icon": Icons.INPUT_ROUNDED, "label": "输入控件"},
+        nav_item={"icon": ft.Icons.INPUT_ROUNDED, "label": "输入控件"},
         page=InputsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
-        nav_item={"icon": Icons.SLIDESHOW_ROUNDED, "label": "轮播图"},
+        nav_item={"icon": ft.Icons.SLIDESHOW_ROUNDED, "label": "轮播图"},
         page=CarouselPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
     app.register_page(
-        nav_item={"icon": Icons.SETTINGS_ROUNDED, "label": "设置"},
+        nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "label": "设置"},
         page=SettingsPage(
             theme_colors=app.theme_colors,
             theme_mode=config.theme_mode,
