@@ -22,8 +22,8 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 # 项目预览
 
 ## 图片预览
-![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/index.png)
-![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/index_2.png)
+![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/images/index.png)
+![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/images/index_2.png)
 
 ## 安装
 
@@ -144,7 +144,7 @@ def main(page: ft.Page):
 
 每个页面应该遵循以下布局结构：
 
-1. 使用 `_build_section` 方法创建独立的内容区块
+1. 使用 `BasePage` 的 `build_section` 方法创建独立的内容区块
 2. 在 `build_content` 中组织这些区块
 3. 使用 `scroll="auto"` 支持内容滚动
 4. 保持合适的间距 (`spacing`)

@@ -12,10 +12,10 @@ def main(page: ft.Page):
     # 设置资源目录
     page.assets_dir = "assets"
     
-    # 设置字体
-    page.theme = ft.Theme(
-        font_family="Microsoft YaHei UI, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
-    )
+    # 如果是macos则不设置字体
+    if page.platform.value != "macos":
+        # 设置字体, 兼容windows
+        page.theme = ft.Theme(font_family="Microsoft YaHei UI")
     
     # 创建配置管理器
     config_manager = ConfigManager()

@@ -22,27 +22,30 @@ from flet import (
     ListTile,
     Icon,
     ProgressBar,
+    WindowDragArea
 )
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Callable
 
+
 class ThemeColors:
     def __init__(self, is_dark: bool = True):
         if is_dark:
-            self.bg_color = "#222831"
-            self.nav_color = "#393E46"
-            self.card_color = "#393E46"
-            self.divider_color = "#9AA6B2"
+            self.title_bar_color = "#1E2228"
+            self.bg_color = "#141518"
+            self.nav_color = "#1E2228"
+            self.card_color = "#1E2228"
+            self.divider_color = "#0A0A0C"
             self.text_color = "#EEEEEE"
-            self.title_bg_color = "#000000"
         else:
-            self.bg_color = "#FAFAFA"  # 更柔和的背景色
-            self.nav_color = "#FFFFFF"  # 更清淡的导航背景色
-            self.card_color = "#FFFFFF"  # 使用纯白色卡片，增加对比
+            self.title_bar_color = "#E9E9E9"  # 标题栏背景色 
+            self.bg_color = "#F6F6F6"  # 更柔和的背景色
+            self.nav_color = "#E9E9E9"  # 更清淡的导航背景色
+            self.card_color = "#F2F2F2"  # 使用纯白色卡片，增加对比
             self.divider_color = "#9AA6B2"  # 稍微深一点的分隔线颜色
             self.text_color = "#333333"  # 更深的文本颜色，增加可读性
-            self.title_bg_color = "#E0E0E0" # 标题栏背景色
-            
+
+
 class BasePage(ABC):
     def __init__(self, on_theme_changed: Callable = None, theme_colors: ThemeColors = None, theme_mode: str = "dark", title: str = ""):
         self.on_theme_changed = on_theme_changed
@@ -50,7 +53,7 @@ class BasePage(ABC):
         self.theme_mode = theme_mode
         self.title = title
         self.content = self.build()
-    
+
     def build_title(self) -> Container:
         """构建统一的标题栏"""
         return Container(
@@ -96,6 +99,7 @@ class BasePage(ABC):
         self.theme_mode = theme_mode
         self.content = self.build()
 
+
 class HomePage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="主页", **kwargs)
@@ -109,9 +113,12 @@ class HomePage(BasePage):
                         controls=[
                             Container(
                                 content=Column([
-                                    Text("Statistics", color=self.theme_colors.text_color, size=20),
-                                    Text("125", color=self.theme_colors.text_color, size=40, weight="bold"),
-                                    Text("Active Projects", color=self.theme_colors.text_color, size=14),
+                                    Text(
+                                        "Statistics", color=self.theme_colors.text_color, size=20),
+                                    Text(
+                                        "125", color=self.theme_colors.text_color, size=40, weight="bold"),
+                                    Text(
+                                        "Active Projects", color=self.theme_colors.text_color, size=14),
                                 ]),
                                 bgcolor=self.theme_colors.card_color,
                                 padding=20,
@@ -121,9 +128,12 @@ class HomePage(BasePage):
                             ),
                             Container(
                                 content=Column([
-                                    Text("Tasks", color=self.theme_colors.text_color, size=20),
-                                    Text("42", color=self.theme_colors.text_color, size=40, weight="bold"),
-                                    Text("Pending Tasks", color=self.theme_colors.text_color, size=14),
+                                    Text(
+                                        "Tasks", color=self.theme_colors.text_color, size=20),
+                                    Text(
+                                        "42", color=self.theme_colors.text_color, size=40, weight="bold"),
+                                    Text(
+                                        "Pending Tasks", color=self.theme_colors.text_color, size=14),
                                 ]),
                                 bgcolor=self.theme_colors.card_color,
                                 padding=20,
@@ -167,14 +177,16 @@ class HomePage(BasePage):
                 Container(
                     content=Column(
                         controls=[
-                            Text("Project Progress", size=20, color=self.theme_colors.text_color),
+                            Text("Project Progress", size=20,
+                                 color=self.theme_colors.text_color),
                             ProgressBar(
                                 width=400,
                                 value=0.7,
                                 color="blue",
                                 bgcolor=self.theme_colors.card_color,
                             ),
-                            Text("70% Completed", size=14, color=self.theme_colors.text_color),
+                            Text("70% Completed", size=14,
+                                 color=self.theme_colors.text_color),
                         ],
                         spacing=10,
                     ),
@@ -184,23 +196,30 @@ class HomePage(BasePage):
                 Container(
                     content=Column(
                         controls=[
-                            Text("Recent Activities", size=20, color=self.theme_colors.text_color),
+                            Text("Recent Activities", size=20,
+                                 color=self.theme_colors.text_color),
                             Container(
                                 content=Column([
                                     ListTile(
                                         leading=Icon(Icons.CALENDAR_MONTH),
-                                        title=Text("Team Meeting", color=self.theme_colors.text_color),
-                                        subtitle=Text("10:00 AM", color=self.theme_colors.text_color),
+                                        title=Text(
+                                            "Team Meeting", color=self.theme_colors.text_color),
+                                        subtitle=Text(
+                                            "10:00 AM", color=self.theme_colors.text_color),
                                     ),
                                     ListTile(
                                         leading=Icon(Icons.WORK),
-                                        title=Text("Project Review", color=self.theme_colors.text_color),
-                                        subtitle=Text("2:30 PM", color=self.theme_colors.text_color),
+                                        title=Text(
+                                            "Project Review", color=self.theme_colors.text_color),
+                                        subtitle=Text(
+                                            "2:30 PM", color=self.theme_colors.text_color),
                                     ),
                                     ListTile(
                                         leading=Icon(Icons.PERSON),
-                                        title=Text("Client Meeting", color=self.theme_colors.text_color),
-                                        subtitle=Text("4:00 PM", color=self.theme_colors.text_color),
+                                        title=Text(
+                                            "Client Meeting", color=self.theme_colors.text_color),
+                                        subtitle=Text(
+                                            "4:00 PM", color=self.theme_colors.text_color),
                                     ),
                                 ]),
                                 bgcolor=self.theme_colors.card_color,
@@ -217,6 +236,7 @@ class HomePage(BasePage):
             spacing=0,
         )
 
+
 class WidgetsPage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="Widgets Page", **kwargs)
@@ -228,7 +248,8 @@ class WidgetsPage(BasePage):
                     content=Row(
                         controls=[
                             Container(
-                                content=Text("Widget Controls", color=self.theme_colors.text_color),
+                                content=Text(
+                                    "Widget Controls", color=self.theme_colors.text_color),
                                 bgcolor=self.theme_colors.card_color,
                                 padding=20,
                                 border_radius=10,
@@ -245,6 +266,7 @@ class WidgetsPage(BasePage):
             spacing=0,
         )
 
+
 class NewPage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="New Page", **kwargs)
@@ -253,13 +275,15 @@ class NewPage(BasePage):
         return Column(
             controls=[
                 Container(
-                    content=Text("New Page", size=32, color=self.theme_colors.text_color),
+                    content=Text("New Page", size=32,
+                                 color=self.theme_colors.text_color),
                     padding=20,
                 ),
             ],
             scroll=ScrollMode.AUTO,
             spacing=0,
         )
+
 
 class SavePage(BasePage):
     def __init__(self, **kwargs):
@@ -269,13 +293,15 @@ class SavePage(BasePage):
         return Column(
             controls=[
                 Container(
-                    content=Text("Save Page", size=32, color=self.theme_colors.text_color),
+                    content=Text("Save Page", size=32,
+                                 color=self.theme_colors.text_color),
                     padding=20,
                 ),
             ],
             scroll=ScrollMode.AUTO,
             spacing=0,
         )
+
 
 class SettingsPage(BasePage):
     def __init__(self, **kwargs):
@@ -291,21 +317,25 @@ class SettingsPage(BasePage):
                 Container(
                     content=Column(
                         controls=[
-                            Text("Theme Mode", size=20, color=self.theme_colors.text_color),
+                            Text("Theme Mode", size=20,
+                                 color=self.theme_colors.text_color),
                             RadioGroup(
                                 content=Column(
                                     controls=[
-                                        Radio(value="dark", label="Dark Theme"),
-                                        Radio(value="light", label="Light Theme"),
-                                        Radio(value="system", label="System Theme"),
+                                        Radio(value="dark",
+                                              label="Dark Theme"),
+                                        Radio(value="light",
+                                              label="Light Theme"),
+                                        Radio(value="system",
+                                              label="System Theme"),
                                     ]
                                 ),
                                 value=self.theme_mode,
                                 on_change=on_theme_change,
                             ),
                         ],
-                        
-                        
+
+
                     ),
                     bgcolor=self.theme_colors.card_color,
                     padding=20,
@@ -316,6 +346,7 @@ class SettingsPage(BasePage):
             scroll=ScrollMode.AUTO,
             spacing=0,
         )
+
 
 class App:
     def __init__(self):
@@ -330,13 +361,13 @@ class App:
         self.pages: Dict[int, BasePage] = {}
         self.is_nav_extended = True  # 添加这行，用于跟踪导航栏的展开状态
         self._init_pages()
-        
+
     def _update_pages_theme(self):
         for page in self.pages.values():
             page.update_theme(self.theme_colors, self.theme_mode)
         # Update current page content
         self.content_area.content = self.pages[self.current_page_index].content
-            
+
     def _update_layout_theme(self):
         if self.content_area:
             self.content_area.bgcolor = self.theme_colors.bg_color
@@ -359,10 +390,10 @@ class App:
     def _update_theme_colors(self):
         is_dark = self._get_effective_theme()
         self.theme_colors = ThemeColors(is_dark=is_dark)
-            
+
     def change_theme(self, theme_mode: str):
         self.theme_mode = theme_mode
-        
+
         if theme_mode == "system":
             # Get current system theme and set the corresponding theme mode
             is_dark = self.page.platform_brightness == "dark"
@@ -371,7 +402,7 @@ class App:
             self.page.theme_mode = ThemeMode.DARK
         else:  # light
             self.page.theme_mode = ThemeMode.LIGHT
-            
+
         self._update_theme_colors()
         self._update_pages_theme()
         self._update_layout_theme()
@@ -392,13 +423,13 @@ class App:
                 theme_mode=self.theme_mode
             ),
         }
-        
+
     def init_page(self, page: Page):
         """
         初始化页面，设置页面属性，并设置系统主题变化处理程序
         """
         self.page = page
-        
+
         # Set up system theme change handler
         def handle_system_theme_change(e):
             if self.theme_mode == "system":
@@ -408,29 +439,30 @@ class App:
                 self._update_pages_theme()
                 self._update_layout_theme()
                 self.page.update()
-        
+
         # Set page properties
         page.padding = 0
         page.theme_mode = ThemeMode.DARK
         page.bgcolor = self.theme_colors.bg_color
         page.on_platform_brightness_change = handle_system_theme_change
-        
+
         # 修改窗口属性设置方式
         page.window.title_bar_hidden = True
-        page.window.frameless = True
-        
+        # page.window.frameless = True
+
         # 设置窗口大小和位置
         page.window.width = 1300
         page.window.height = 800
         page.window.min_width = 500
         page.window.min_height = 400
-        
+
         # 将窗口居中显示
         page.window.center()
 
         def nav_change(e):
             selected_index = e.control.selected_index
-            if selected_index == 5:  # Exit button (moved to index 5 due to settings)
+            # Exit button (moved to index 5 due to settings)
+            if selected_index == 5:
                 page.window.close()
             else:
                 self.current_page_index = selected_index
@@ -464,7 +496,8 @@ class App:
                         icon=item["icon"],
                         selected_icon=item["icon"],
                         label=item["label"],
-                        padding=padding.only(left=10) if self.is_nav_extended else None,
+                        padding=padding.only(
+                            left=10) if self.is_nav_extended else None,
                     ) for item in self.nav_items
                 ],
                 on_change=nav_change,
@@ -483,13 +516,13 @@ class App:
 
         # Navigation items 修改导航栏的图标和标签
         self.nav_items = [
-            
+
             {"icon": Icons.HOME_ROUNDED, "label": "主页"},
             {"icon": Icons.WIDGETS_ROUNDED, "label": "组件"},
             {"icon": Icons.ADD_ROUNDED, "label": "新建"},
             {"icon": Icons.SAVE_ROUNDED, "label": "保存"},
             {"icon": Icons.SETTINGS_ROUNDED, "label": "设置"},
-            
+
             {"icon": Icons.CLOSE_ROUNDED, "label": "退出"},
         ]
 
@@ -517,7 +550,8 @@ class App:
                     icon=item["icon"],
                     selected_icon=item["icon"],
                     label=item["label"],
-                    padding=padding.only(left=10) if self.is_nav_extended else None,
+                    padding=padding.only(
+                        left=10) if self.is_nav_extended else None,
                 ) for item in self.nav_items
             ],
             on_change=nav_change,
@@ -557,7 +591,8 @@ class App:
                                     width=1,
                                     color=self.theme_colors.divider_color,
                                 ),
-                                padding=padding.only(left=0, right=0),  # 移除水平内边距
+                                padding=padding.only(
+                                    left=0, right=0),  # 移除水平内边距
                                 margin=margin.all(0),  # 移除外边距
                             ),
                             Container(
@@ -581,70 +616,74 @@ class App:
         def minimize(e):
             self.page.window.minimized = True
             self.page.update()
-            
+
         def maximize(e):
             self.page.window.maximized = not self.page.window.maximized
             # 强制重新构建标题栏以更新图标
             if self.page.controls and self.page.controls[0].controls:
                 self.page.controls[0].controls[0] = self._build_title_bar()
             self.page.update()
-            
+
         def close(e):
             self.page.window.close()
             self.page.update()
-            
-        return Container(
-            content=Row(
-                controls=[
-                    # 标题文本
-                    Container(
-                        content=Text(
-                            self.app_title,
-                            size=14,
-                            weight="bold",
+
+        return WindowDragArea(
+            content=Container(
+                content=Row(
+                    controls=[
+                        # 标题文本
+                        Container(
+                            content=Text(
+                                self.app_title,
+                                size=14,
+                                weight="bold",
+                            ),
+                            alignment=alignment.center,
+                            expand=True,
                         ),
-                        padding=padding.only(left=15),
-                    ),
-                    # 使用空白Container来推动按钮到右侧
-                    Container(expand=True),
-                    # 窗口控制按钮组
-                    Container(
-                        content=Row(
-                            controls=[
-                                IconButton(
-                                    icon=Icons.REMOVE,
-                                    icon_size=20,
-                                    tooltip="最小化",
-                                    on_click=minimize,
-                                ),
-                                IconButton(
-                                    # 根据窗口状态切换图标
-                                    icon=Icons.CROP_DIN if self.page.window.maximized else Icons.CROP_SQUARE,
-                                    icon_size=20,
-                                    tooltip="还原" if self.page.window.maximized else "最大化",
-                                    on_click=maximize,
-                                ),
-                                IconButton(
-                                    icon=Icons.CLOSE,
-                                    icon_size=20,
-                                    tooltip="关闭",
-                                    on_click=close,
-                                ),
-                            ],
-                            spacing=0,
+                        # 使用空白Container来推动按钮到右侧
+                        # Container(expand=True),
+                        # 窗口控制按钮组
+                        Container(
+                            content=Row(
+                                controls=[
+                                    IconButton(
+                                        icon=Icons.REMOVE,
+                                        icon_size=20,
+                                        tooltip="最小化",
+                                        on_click=minimize,
+                                    ),
+                                    IconButton(
+                                        # 根据窗口状态切换图标
+                                        icon=Icons.CROP_DIN if self.page.window.maximized else Icons.CROP_SQUARE,
+                                        icon_size=20,
+                                        tooltip="还原" if self.page.window.maximized else "最大化",
+                                        on_click=maximize,
+                                    ),
+                                    IconButton(
+                                        icon=Icons.CLOSE,
+                                        icon_size=20,
+                                        tooltip="关闭",
+                                        on_click=close,
+                                    ),
+                                ],
+                                spacing=0,
+                            ),
+                            padding=padding.only(right=10),
                         ),
-                        padding=padding.only(right=10),
-                    ),
-                ],
-                spacing=0,
-            ),
-            bgcolor=self.theme_colors.nav_color,
-            height=40,
+                    ],
+                    spacing=0,
+                ),
+                bgcolor=self.theme_colors.nav_color,
+            )
         )
+
 
 def main(page: Page):
     app = App()
     app.init_page(page)
+
 
 if __name__ == "__main__":
     ft.app(target=main)

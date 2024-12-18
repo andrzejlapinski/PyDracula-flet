@@ -1,6 +1,7 @@
 import flet as ft
 from core.base_page import BasePage
 
+
 class WidgetsPage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="组件", **kwargs)
@@ -8,33 +9,16 @@ class WidgetsPage(BasePage):
     def build_content(self) -> ft.Column:
         return ft.Column(
             controls=[
-                self._build_section("填充按钮", self._build_filled_buttons()),
-                self._build_section("浮动操作按钮", self._build_floating_buttons()),
-                self._build_section("图标按钮", self._build_icon_buttons()),
-                self._build_section("菜单按钮", self._build_menu_buttons()),
-                self._build_section("轮廓按钮", self._build_outlined_buttons()),
-                self._build_section("分段按钮", self._build_segmented_buttons()),
-                self._build_section("文本按钮", self._build_text_buttons()),
+                self.build_section("填充按钮", self._build_filled_buttons()),
+                self.build_section("浮动操作按钮", self._build_floating_buttons()),
+                self.build_section("图标按钮", self._build_icon_buttons()),
+                self.build_section("菜单按钮", self._build_menu_buttons()),
+                self.build_section("轮廓按钮", self._build_outlined_buttons()),
+                self.build_section("分段按钮", self._build_segmented_buttons()),
+                self.build_section("文本按钮", self._build_text_buttons()),
             ],
             scroll="auto",
             spacing=20,
-        )
-
-    def _build_section(self, title: str, content: ft.Container) -> ft.Container:
-        """构建一个带标题的部分"""
-        return ft.Container(
-            content=ft.Column(
-                controls=[
-                    ft.Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
-                    content,
-                ],
-                spacing=10,
-            ),
-            bgcolor=self.theme_colors.card_color,
-            padding=30,
-            border_radius=ft.border_radius.all(10),
-            border=ft.border.all(1, self.theme_colors.divider_color),
-            margin=ft.padding.symmetric(horizontal=20),
         )
 
     def _build_filled_buttons(self) -> ft.Container:
@@ -187,21 +171,24 @@ class WidgetsPage(BasePage):
                                     text="日",
                                     icon=ft.Icons.CALENDAR_VIEW_DAY,
                                     style=ft.ButtonStyle(
-                                        shape=ft.RoundedRectangleBorder(radius=0),
+                                        shape=ft.RoundedRectangleBorder(
+                                            radius=0),
                                     ),
                                 ),
                                 ft.OutlinedButton(
                                     text="周",
                                     icon=ft.Icons.CALENDAR_VIEW_WEEK,
                                     style=ft.ButtonStyle(
-                                        shape=ft.RoundedRectangleBorder(radius=0),
+                                        shape=ft.RoundedRectangleBorder(
+                                            radius=0),
                                     ),
                                 ),
                                 ft.OutlinedButton(
                                     text="月",
                                     icon=ft.Icons.CALENDAR_VIEW_MONTH,
                                     style=ft.ButtonStyle(
-                                        shape=ft.RoundedRectangleBorder(radius=0),
+                                        shape=ft.RoundedRectangleBorder(
+                                            radius=0),
                                     ),
                                 ),
                             ],
@@ -232,4 +219,4 @@ class WidgetsPage(BasePage):
                 ],
                 spacing=10,
             ),
-        ) 
+        )
