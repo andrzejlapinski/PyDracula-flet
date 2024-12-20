@@ -57,7 +57,7 @@ class NavRail:
             ft.NavigationRailDestination(
                 icon=ft.Icons.MENU,
                 selected_icon=ft.Icons.MENU,
-                label="收起",
+                label="Hide",
                 padding=ft.padding.only(left=10) if self.is_extended else None,
             )
         ]
@@ -76,7 +76,7 @@ class NavRail:
 
     def build(self) -> ft.NavigationRail:
         """构建并返回导航栏对象"""
-        return ft.NavigationRail(
+        nav = ft.NavigationRail(
             selected_index=self.selected_index + 1,  # 因为添加了展开/收起按钮，所以索引需要+1
             label_type="selected" if self.is_extended else "none",
             min_width=60,
@@ -87,6 +87,7 @@ class NavRail:
             destinations=self._build_destinations(),
             on_change=self.on_change,
         )
+        return nav
 
 
 class TitleBar:
@@ -118,6 +119,7 @@ class TitleBar:
                 size=14,
                 weight="bold",
                 color=self.theme_colors.text_color,
+                expand=True,
             ),
         ])
 
@@ -167,7 +169,7 @@ class TitleBar:
             )
 
         # 使用 WindowDragArea 包装整个标题栏， 实现窗口拖动
-        return ft.WindowDragArea(
+        title_bar = ft.WindowDragArea(
             content=ft.Container(
                 content=ft.Row(
                     controls=controls,
@@ -179,7 +181,7 @@ class TitleBar:
                 data="window-drag-area",  # 标记整个标题栏为可拖动区域
             ),
         )
-
+        return title_bar
 
 class App:
     def __init__(self, config: AppConfig = None):
@@ -205,6 +207,11 @@ class App:
 
         # 隐藏标题栏
         self.page.window.title_bar_hidden = True
+        # 处理windows平台下的无边框窗口圆角问题
+        if self.page.platform.value == "windows":
+            self.page.window.frameless = True
+            self.page.window.bgcolor = ft.Colors.TRANSPARENT
+            self.page.bgcolor = ft.Colors.TRANSPARENT
 
         # 创建一个主容器
         self.main_container = ft.Container(
@@ -231,7 +238,6 @@ class App:
 
         # 更新主题颜色
         self.theme_colors = ThemeColors(is_dark=is_dark)
-        self.page.bgcolor = self.theme_colors.bg_color
         self.page.padding = 0
 
     def _create_layout(self):
