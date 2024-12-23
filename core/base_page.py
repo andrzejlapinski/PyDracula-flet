@@ -12,21 +12,54 @@ class BasePage(ABC):
         self.theme_mode = theme_mode
         self.title = title
         self.page = page
+        self._is_rebuilding = False  # 添加重建标志
+        self._state = {}  # 添加状态存储
         self.content = self.build()
 
-    def did_mount(self):
-        """
-        组件挂载后的生命周期方法
-        子类可以重写此方法以在组件挂载后执行操作
-        """
-        pass
+    def save_state(self):
+        """保存页面状态，子类可以重写此方法来保存额外的状态"""
+        state = {}
+        # 只保存控件的值，让样式跟随主题
+        for control_name, control in vars(self).items():
+            if isinstance(control, (ft.TextField, ft.Dropdown, ft.RadioGroup, ft.Text)):
+                state[control_name] = control.value
+            elif isinstance(control, ft.ListView):
+                state[control_name] = [c for c in control.controls]
+        return state
 
-    def will_unmount(self):
-        """
-        组件卸载前的生命周期方法
-        子类可以重写此方法以在组件卸载前执行清理操作
-        """
-        pass
+    def restore_state(self, state):
+        """恢复页面状态，子类可以重写此方法来恢复额外的状态"""
+        # 只恢复控件的值，让样式跟随主题
+        for control_name, value in state.items():
+            if hasattr(self, control_name):
+                control = getattr(self, control_name)
+                if isinstance(control, (ft.TextField, ft.Dropdown, ft.RadioGroup, ft.Text)):
+                    control.value = value
+                elif isinstance(control, ft.ListView):
+                    control.controls = value
+
+    def update_theme(self, theme_colors: ThemeColors, theme_mode: str):
+        """更新主题时的处理"""
+        self._is_rebuilding = True  # 设置重建标志
+        
+        # 保存当前状态
+        self._state = self.save_state()
+        
+        # 更新主题
+        self.theme_colors = theme_colors
+        self.theme_mode = theme_mode
+        
+        # 重建页面
+        self.content = self.build()
+        
+        # 恢复状态
+        self.restore_state(self._state)
+        
+        self._is_rebuilding = False  # 清除重建标志
+
+    def is_rebuilding(self) -> bool:
+        """检查页面是否正在重建"""
+        return getattr(self, '_is_rebuilding', False)
 
     def build_title(self) -> Container:
         """构建统一的标题栏"""
@@ -39,9 +72,8 @@ class BasePage(ABC):
             padding=padding.only(top=10, bottom=10, left=30),
             bgcolor=self.theme_colors.nav_color,
             margin=margin.only(left=-10, bottom=20),
-            width=5000,                                             # 设置标题栏宽度,填充整行
+            width=5000,
         )
-
         return container
 
     @abstractmethod
@@ -54,8 +86,8 @@ class BasePage(ABC):
         container = Container(
             content=Column(
                 controls=[
-                    self.build_title(),  # 标题部分
-                    Container(  # 内容部分
+                    self.build_title(),
+                    Container(
                         content=self.build_content(),
                         expand=True,
                         bgcolor=self.theme_colors.bg_color,
@@ -69,12 +101,7 @@ class BasePage(ABC):
         )
         return container
 
-    def update_theme(self, theme_colors: ThemeColors, theme_mode: str):
-        self.theme_colors = theme_colors
-        self.theme_mode = theme_mode
-        self.content = self.build()
-
-    def build_section(self, title: str = None, content: Container = None) -> Container:
+    def build_section(self, title: str = None, content: ft.Control = None) -> Container:
         """构建一个带标题的部分"""
         controls = []
 
@@ -83,20 +110,26 @@ class BasePage(ABC):
             controls.append(title_text)
 
         if content:
+            if not isinstance(content, Container):
+                content = Container(
+                    content=content,
+                    expand=True,
+                )
             controls.append(content)
 
         section_content = Column(
             controls=controls,
-            spacing=10,  # 减少标题和内容之间的间距
+            spacing=10,
         )
 
         container = Container(
             content=section_content,
             bgcolor=self.theme_colors.card_color,
-            padding=30 if title else 10,  # 根据是否有标题调整内边距
-            border_radius=border_radius.all(10),  # 更圆的边角
-            border=border.all(1, self.theme_colors.divider_color),  # 添加轮廓线
-            margin=padding.symmetric(horizontal=20, vertical=10),  # 增加上下边距
+            padding=20 if title else 10,
+            border_radius=border_radius.all(10),
+            border=border.all(1, self.theme_colors.divider_color),
+            margin=padding.symmetric(horizontal=20),
+            expand=1,
         )
         
         return container

@@ -6,11 +6,7 @@ from core.base_page import BasePage
 
 class HomePage(BasePage):
     def __init__(self, **kwargs):
-        self.images = [
-            "banner1.jpg",
-            "banner2.jpg",
-            "banner3.jpg",
-        ]
+        self.save_state_text = ft.TextField(label="保存状态测试文本框", hint_text="请在此输入，文字在切换主题时会保留")
         super().__init__(title="主页", **kwargs)
 
     def _build_carousel(self) -> ft.Container:
@@ -49,7 +45,8 @@ class HomePage(BasePage):
             items=carousel_items,
             buttons=nav_buttons,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            items_alignment=ft.MainAxisAlignment.CENTER
+            items_alignment=ft.MainAxisAlignment.CENTER,
+            margin=ft.margin.all(20),
         )
 
         return carousel
@@ -123,7 +120,7 @@ class HomePage(BasePage):
 
     def _build_progress_section(self) -> ft.Container:
         """构建进度部分"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Column([
                 ft.Text("Project Progress", size=20,
                         color=self.theme_colors.text_color),
@@ -138,6 +135,7 @@ class HomePage(BasePage):
             ], spacing=10),
             padding=20,
         )
+        return container
 
     def _build_activities_section(self) -> ft.Container:
         """构建活动列表部分"""
@@ -171,9 +169,11 @@ class HomePage(BasePage):
 
     def build_content(self) -> ft.Column:
         """构建页面内容"""
+        section = self.build_section("测试保留数据", self.save_state_text)
         container = ft.Container(
             content=ft.Column([
                 self._build_carousel(),
+                section,
                 self._build_stats_section(),
                 self.build_section("", self._build_actions_section()),
                 self._build_progress_section(),

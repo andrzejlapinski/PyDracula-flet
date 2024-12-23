@@ -5,12 +5,6 @@ class InputsPage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="输入控件", **kwargs)
 
-    def _handle_time_entry_mode_change(self, e):
-        """处理输入模式变化"""
-        if hasattr(self, 'time_mode_text'):
-            self.time_mode_text.value = f"输入模式变更为: {e.entry_mode}"
-            self.time_mode_text.update()
-
     def build_content(self) -> ft.Column:
         """构建输入控件页面内容"""
         container = ft.Column([
@@ -24,11 +18,9 @@ class InputsPage(BasePage):
         return container
         
     def _build_text_inputs(self) -> ft.Container:
-        content = ft.Column([
-            ft.TextField(
-                label="基本输入框",
-                hint_text="请输入...",
-            ),
+        self.text_field = ft.TextField()
+        self.content = ft.Column([
+            self.text_field,
             ft.TextField(
                 label="带图标的输入框",
                 hint_text="搜索...",
@@ -48,11 +40,11 @@ class InputsPage(BasePage):
             ),
         ], spacing=20)
         
-        return self.build_section("文本输入", content)
+        return self.build_section("文本输入", self.content)
 
     def _build_dropdowns(self) -> ft.Container:
         """下拉选择示例"""
-        content = ft.Row([
+        self.content = ft.Row([
             # 基本下拉框
             ft.Dropdown(
                 label="基本下拉框",
@@ -86,38 +78,38 @@ class InputsPage(BasePage):
             ),
         ], spacing=20)
         
-        return self.build_section("下拉选择", content)
+        return self.build_section("下拉选择", self.content)
 
     def _build_checkboxes(self) -> ft.Container:
-        content = ft.Column([
+        self.content = ft.Column([
             ft.Checkbox(label="基本复选框"),
             ft.Checkbox(label="默认选中", value=True),
             ft.Checkbox(label="三态复选框", tristate=True),
             ft.Checkbox(label="禁用状态", disabled=True),
         ], spacing=10)
         
-        return self.build_section("复选框", content)
+        return self.build_section("复选框", self.content)
 
     def _build_radios(self) -> ft.Container:
-        content = ft.Row([
+        self.content = ft.Row([
             ft.Radio(value="option1", label="选项1"),
             ft.Radio(value="option2", label="选项2"),
             ft.Radio(value="option3", label="选项3", disabled=True),
         ], spacing=10)
         
-        return self.build_section("单选框", content)
+        return self.build_section("单选框", self.content)
 
     def _build_switches(self) -> ft.Container:
-        content = ft.Row([
+        self.content = ft.Row([
             ft.Switch(label="基本开关"),
             ft.Switch(label="默认开启", value=True),
             ft.Switch(label="禁用状态", disabled=True),
         ], spacing=20)
         
-        return self.build_section("开关", content)
+        return self.build_section("开关", self.content)
 
     def _build_sliders(self) -> ft.Container:
-        content = ft.Column([
+        self.content = ft.Column([
             ft.Slider(
                 min=0,
                 max=100,
@@ -133,4 +125,4 @@ class InputsPage(BasePage):
             ),
         ], spacing=20)
         
-        return self.build_section("滑块", content)
+        return self.build_section("滑块", self.content)

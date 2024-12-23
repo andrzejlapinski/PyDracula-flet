@@ -37,10 +37,6 @@ git clone https://github.com/clarencejh/PyDracula-flet.git
 
 ```bash
 pip install -r requirements.txt
-
-or
-
-conda env create -f environment.yml
 ```
 
 3. 运行应用：
@@ -84,9 +80,9 @@ class MyPage(BasePage):
         super().__init__(title="我的页面", **kwargs)
 
     def build_content(self) -> Column:
-        return Column(
+        container = Column(
             controls=[
-                self._build_section(
+                self.build_section(
                     "标题",
                     Container(
                         content=Text("Hello, World!")
@@ -96,21 +92,7 @@ class MyPage(BasePage):
             scroll="auto",
             spacing=20,
         )
-
-    def _build_section(self, title: str, content: Container) -> Container:
-        return Container(
-            content=Column(
-                controls=[
-                    Text(title, size=20, weight="bold", color=self.theme_colors.text_color),
-                    content,
-                ],
-                spacing=10,
-            ),
-            bgcolor=self.theme_colors.card_color,
-            padding=30,
-            border_radius=border_radius.all(10),
-            margin=padding.symmetric(horizontal=20),
-        )
+        return container
 ```
 
 2. 在 `main.py` 中注册新页面：
@@ -166,6 +148,37 @@ def save_setting(self, section: str, key: str, value: str):
 ### 通用方法
 
 通用方法可以添加到 `core/base_page.py` 中。
+
+### 状态管理限制
+
+在切换主题时，BasePage 类只能保存和恢复作为类属性的控件状态。例如：
+
+```python
+class MyPage(BasePage):
+    def __init__(self, **kwargs):
+        # 将控件定义为类属性，这样可以在主题切换时保持状态
+        self.my_input = ft.TextField(label="输入框")
+        super().__init__(**kwargs)
+
+    def build_content(self) -> Column:
+        return Column(
+            controls=[
+                self.my_input  # 使用类属性中的控件
+            ]
+        )
+```
+
+而不是：
+
+```python
+def build_content(self) -> Column:
+    # 在方法中直接创建控件，这样无法在主题切换时保持状态
+    return Column(
+        controls=[
+            ft.TextField(label="输入框")
+        ]
+    )
+```
 
 ## 单独的运行文件
 

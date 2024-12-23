@@ -7,7 +7,7 @@ class WidgetsPage(BasePage):
         super().__init__(title="组件", **kwargs)
 
     def build_content(self) -> ft.Column:
-        return ft.Column(
+        column = ft.Column(
             controls=[
                 self.build_section("填充按钮", self._build_filled_buttons()),
                 self.build_section("浮动操作按钮", self._build_floating_buttons()),
@@ -21,9 +21,11 @@ class WidgetsPage(BasePage):
             spacing=20,
         )
 
+        return column
+
     def _build_filled_buttons(self) -> ft.Container:
         """填充按钮示例"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.FilledButton(text="基本按钮"),
@@ -39,10 +41,11 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
+        return container
 
     def _build_floating_buttons(self) -> ft.Container:
         """浮动操作按钮示例"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.FloatingActionButton(
@@ -63,10 +66,10 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
-
+        return container
     def _build_icon_buttons(self) -> ft.Container:
         """图标按钮示例"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.IconButton(
@@ -90,10 +93,10 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
-
+        return container
     def _build_menu_buttons(self) -> ft.Container:
         """菜单按钮示例"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.PopupMenuButton(
@@ -139,10 +142,10 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
-
+        return container
     def _build_outlined_buttons(self) -> ft.Container:
         """轮廓按钮示例"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.OutlinedButton(text="基本轮廓按钮"),
@@ -158,10 +161,10 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
-
+        return container
     def _build_segmented_buttons(self) -> ft.Container:
         """分段按钮示例"""
-        return ft.Container(
+        container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.Container(
@@ -201,10 +204,10 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
-
+        return container
     def _build_text_buttons(self) -> ft.Container:
         """文本按钮示例"""
-        return ft.Container(
+        self.container = ft.Container(
             content=ft.Row(
                 controls=[
                     ft.TextButton(text="基本文本按钮"),
@@ -220,3 +223,4 @@ class WidgetsPage(BasePage):
                 spacing=10,
             ),
         )
+        return self.container
