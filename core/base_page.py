@@ -15,7 +15,26 @@ class BasePage(ABC):
         self._is_rebuilding = False  # 添加重建标志
         self._state = {}  # 添加状态存储
         self.content = self.build()
-
+        
+    def show_dialog(self, message: str, title: str = "提示"):
+        """
+        显示弹窗提示，可自定义动作
+        
+        了解更多请访问
+        url: https://flet.qiannianlu.com/docs/controls/alertdialog
+        """
+        dialog = ft.AlertDialog(
+            title=ft.Text(title),
+            content=ft.Text(message),
+            # actions=[
+            #     ft.TextButton("确定", on_click=lambda _: self.page.open(None)),
+            #     ft.TextButton("取消", on_click=lambda _: self.page.open(None))
+            #     ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        self.page.open(dialog)
+        self.page.update()
+        
     def save_state(self):
         """保存页面状态，子类可以重写此方法来保存额外的状态"""
         state = {}
@@ -25,6 +44,8 @@ class BasePage(ABC):
                 state[control_name] = control.value
             elif isinstance(control, ft.ListView):
                 state[control_name] = [c for c in control.controls]
+            elif isinstance(control, ft.FloatingActionButton):
+                state[control_name] = control.content
         return state
 
     def restore_state(self, state):

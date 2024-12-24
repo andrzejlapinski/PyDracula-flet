@@ -180,6 +180,12 @@ def build_content(self) -> Column:
     )
 ```
 
+## 其他
+
+1. 轮播图组件，使用的是 [fletcarousel](https://github.com/clarencejh/fletcarousel) ，感谢作者的贡献。
+2. flet 中文文档: [https://flet.qiannianlu.com/docs/getting-started/](https://flet.qiannianlu.com/docs/getting-started/)
+3. flet 官方文档: [https://flet.dev/docs/](https://flet.dev/docs/)
+
 ## 单独的运行文件
 
 在 `single_main.py` 中，可以单独运行，不需要使用其他文件。但不再更新内容。
