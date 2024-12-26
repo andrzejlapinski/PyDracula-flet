@@ -288,6 +288,7 @@ class MyPage(BasePage):
 1. 轮播图组件使用的是 [fletcarousel](https://github.com/clarencejh/fletcarousel)
 2. flet 中文文档: [https://flet.qiannianlu.com/docs/getting-started/](https://flet.qiannianlu.com/docs/getting-started/)
 3. flet 官方文档: [https://flet.dev/docs/](https://flet.dev/docs/)
+4. 组件库推荐:[https://github.com/LegendaryPistachio/FletCustomRepo](https://github.com/LegendaryPistachio/FletCustomRepo)
 
 ## 单独的运行文件
 
