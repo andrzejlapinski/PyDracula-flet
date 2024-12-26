@@ -24,9 +24,9 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 # 项目预览
 
 ## 图片预览
-| ![Image 1](path/to/image1.png) | ![Image 2](path/to/image2.png) |
+| ![Image 1](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot1.png?raw=true) | ![Image 2](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot3.png?raw=true) |
 |----------------------------------|----------------------------------|
-| ![Image 3](path/to/image3.png) | ![Image 4](path/to/image4.png) |
+| ![Image 3](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot2.png?raw=true) | ![Image 4](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot4.png?raw=true) |
 
 ## 安装
 
