@@ -55,7 +55,7 @@ class NavRail:
         # 添加展开/收起按钮作为第一个导航项
         destinations = [
             ft.NavigationRailDestination(
-                icon=ft.Icons.MENU,
+                icon=ft.Icons.MENU_OPEN,
                 selected_icon=ft.Icons.MENU,
                 label="Hide",
                 padding=ft.padding.only(left=10) if self.is_extended else None,
@@ -78,10 +78,15 @@ class NavRail:
         """构建并返回导航栏对象"""
         nav = ft.NavigationRail(
             selected_index=self.selected_index + 1,  # 因为添加了展开/收起按钮，所以索引需要+1
+            # 修改这2个属性来修改导航栏的显示方式
             label_type="selected" if self.is_extended else "none",
-            min_width=60,
-            min_extended_width=200,
             extended=self.is_extended,
+            # label_type=ft.NavigationRailLabelType.ALL,
+            # extended=False,
+            
+            
+            min_width=60,
+            min_extended_width=150,
             bgcolor=self.theme_colors.nav_color,
             leading=self._build_title(),
             destinations=self._build_destinations(),
@@ -405,5 +410,12 @@ class App:
 
         # 更新主容器
         self.main_container.bgcolor = self.theme_colors.bg_color
+        self.main_container.content = self._create_layout()
+        self.page.update()
+
+    def update_nav_rail_state(self, is_extended: bool):
+        """更新导航栏展开状态"""
+        self.is_nav_extended = is_extended
+        # 更新主容器的内容
         self.main_container.content = self._create_layout()
         self.page.update()

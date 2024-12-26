@@ -5,6 +5,7 @@ from pages.widgets import WidgetsPage
 from pages.settings import SettingsPage
 from pages.inputs import InputsPage
 from pages.carousel import CarouselPage
+from pages.expansion_nav import ExpansionNavPage
 from core.config_manager import ConfigManager
 
 
@@ -30,6 +31,10 @@ def main(page: ft.Page):
     config.window_min_height = int(config_manager.get("Window", "min_height", "400"))
     config.nav_rail_extended = config_manager.get("Theme", "nav_rail_extended", "true").lower() == "true"
     
+    # 设置主题色
+    theme_color = config_manager.get("Theme", "color", ft.Colors.BLUE)
+    page.theme = ft.Theme(color_scheme_seed=theme_color)
+    
     # 创建应用实例
     app = App(config)
     
@@ -54,6 +59,11 @@ def main(page: ft.Page):
         page=CarouselPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
     )
     
+    # app.register_page(
+    #     nav_item={"icon": ft.Icons.MENU_ROUNDED, "label": "导航菜单"},
+    #     page=ExpansionNavPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
+    # )
+    
     app.register_page(
         nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "label": "设置"},
         page=SettingsPage(
@@ -61,7 +71,8 @@ def main(page: ft.Page):
             theme_mode=config.theme_mode,
             on_theme_changed=app._update_theme,
             config_manager=config_manager,
-            page=page
+            page=page,
+            app=app
         )
     )
     
