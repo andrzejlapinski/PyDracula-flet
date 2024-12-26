@@ -1,15 +1,14 @@
-import flet as ft
-from components.fletcarousel.horizontal import BasicHorizontalCarousel
-from components.fletcarousel.attributes import AutoCycle
-from core.base_page import BasePage
 import asyncio
 import time
+import flet as ft
+from core.base_page import BasePage
 
-class HomePage(BasePage):
-    def __init__(self, **kwargs):
-        self.save_state_text = ft.TextField(label="保存状态测试文本框", hint_text="请在此输入，文字在切换主题时会保留")
-        super().__init__(title="主页", **kwargs)
+class FloatingButtonsPage(BasePage):
+    """浮动按钮示例页面"""
     
+    def __init__(self, **kwargs):
+        super().__init__(title="浮动按钮", **kwargs)
+        
     def set_button_loading(self, button: ft.FloatingActionButton, is_loading: bool):
         """
         设置按钮的加载状态
@@ -57,48 +56,6 @@ class HomePage(BasePage):
         except AssertionError:
             # 忽略在页面重建过程中的更新错误
             pass
-
-    def _build_carousel(self) -> ft.Container:
-        """构建轮播图"""
-        # 根据窗口的大小来修改轮播图显示的数量
-        items_count = 4 if self.page.width > 800 else 3
-
-        # 轮播图项目
-        carousel_items = [
-            ft.Container(
-                content=ft.Text(value=str(i), size=20),
-                height=200,
-                width=300,
-                bgcolor=self.theme_colors.divider_color,
-                border_radius=15,
-                alignment=ft.alignment.center,
-            ) for i in range(10)
-        ]
-
-        # 导航按钮
-        nav_buttons = [
-            ft.FloatingActionButton(
-                icon=ft.Icons.NAVIGATE_BEFORE,
-                bgcolor=self.theme_colors.divider_color,
-            ),
-            ft.FloatingActionButton(
-                icon=ft.Icons.NAVIGATE_NEXT,
-                bgcolor=self.theme_colors.divider_color,
-            )
-        ]
-
-        carousel = BasicHorizontalCarousel(
-            page=self.page,
-            items_count=items_count,
-            auto_cycle=AutoCycle(duration=5),
-            items=carousel_items,
-            buttons=nav_buttons,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            items_alignment=ft.MainAxisAlignment.CENTER,
-            margin=ft.margin.all(20),
-        )
-
-        return carousel
     
     async def start_loading(self, e):
         """
@@ -242,47 +199,31 @@ class HomePage(BasePage):
         )
         return container
 
-    def _build_activities_section(self) -> ft.Container:
+    def _build_activities_section_te(self) -> ft.Container:
         """构建活动列表部分"""
-        activities = [
-            ("Team Meeting", "10:00 AM", ft.Icons.CALENDAR_MONTH),
-            ("Project Review", "2:30 PM", ft.Icons.WORK),
-            ("Client Meeting", "4:00 PM", ft.Icons.PERSON),
-        ]
+        # 创建一个list
+        lv = ft.ListView(expand=True, spacing=10, padding=20, auto_scroll=True, height=200)
 
-        activity_items = [
-            ft.ListTile(
-                leading=ft.Icon(icon),
-                title=ft.Text(title, color=self.theme_colors.text_color),
-                subtitle=ft.Text(time, color=self.theme_colors.text_color),
-            ) for title, time, icon in activities
-        ]
+        count = 1
 
-        activities_list = ft.Container(
-            content=ft.Column(activity_items),
-            bgcolor=self.theme_colors.card_color,
-            border_radius=ft.border_radius.all(10),
-            padding=10,
+        for i in range(0, 60):
+            lv.controls.append(ft.Text(f"行 {count}"))
+            count += 1
+        return ft.Container(
+            content=lv,
+            padding=20,
+            expand=True,
+            border=ft.border.only(bottom=ft.BorderSide(1, self.theme_colors.divider_color)),
         )
-
-        title = ft.Text("Recent Activities", size=20,
-                        color=self.theme_colors.text_color)
-        content = ft.Column([title, activities_list], spacing=10)
-        container = ft.Container(content=content, padding=20)
-
-        return container
 
     def build_content(self) -> ft.Column:
         """构建页面内容"""
-        section = self.build_section("测试保留数据", self.save_state_text)
         container = ft.Container(
             content=ft.Column([
-                self._build_carousel(),
                 self._build_stats_section(),
-                section,
                 self.build_section("", self._build_actions_section()),
                 self._build_progress_section(),
-                self._build_activities_section(),
+                self._build_activities_section_te(),
             ], scroll="auto", spacing=10),
             bgcolor=self.theme_colors.bg_color,
         )

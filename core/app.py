@@ -77,7 +77,7 @@ class NavRail:
     def build(self) -> ft.NavigationRail:
         """构建并返回导航栏对象"""
         nav = ft.NavigationRail(
-            selected_index=self.selected_index + 1,  # 因为添加了展开/收起按钮，所以索引需要+1
+            selected_index=self.selected_index + 1,  # 因为添加了展开/收起按钮，所以索引需要+1            
             # 修改这2个属性来修改导航栏的显示方式
             label_type="selected" if self.is_extended else "none",
             extended=self.is_extended,
@@ -129,7 +129,6 @@ class TitleBar:
         ])
 
         controls = [
-            # 添加窗口拖动区域，使用 GestureDetector 处理双击
             ft.Container(
                 content=title_content,
                 expand=True,
@@ -183,7 +182,7 @@ class TitleBar:
                 ),
                 bgcolor=self.theme_colors.title_bar_color,
                 height=40,
-                data="window-drag-area",  # 标记整个标题栏为可拖动区域
+                data="window-drag-area",  # 标记整个标题栏为拖动区域
             ),
         )
         return title_bar
@@ -218,7 +217,7 @@ class App:
             self.page.window.bgcolor = ft.Colors.TRANSPARENT
             self.page.bgcolor = ft.Colors.TRANSPARENT
 
-        # 创建一个主容器
+        # 创建一个容器
         self.main_container = ft.Container(
             content=self._create_layout(),
             bgcolor=self.theme_colors.bg_color,
@@ -245,11 +244,9 @@ class App:
         self.theme_colors = ThemeColors(is_dark=is_dark)
         self.page.padding = 0
 
-    def _create_layout(self):
+    def _create_layout(self) -> ft.Column:
         """创建主布局"""
-        controls = []
-
-        # 在非 macOS 平台上添加自定义标题栏
+        # 创建标题栏
         title_bar = TitleBar(
             app_title=self.config.app_title,
             theme_colors=self.theme_colors,
@@ -257,8 +254,8 @@ class App:
             on_update=self.page.update,
             platform=self.platform
         )
-        controls.append(title_bar.build())
-
+        
+        
         # 创建导航栏
         self.nav_rail = NavRail(
             nav_items=self.nav_items,
@@ -269,64 +266,77 @@ class App:
             selected_index=self.current_page_index,
             app_title=self.config.app_title,
         )
-
-        # 添加主要内容区域
-        controls.append(
-            ft.Container(
-                content=ft.Row(
+        
+        return ft.Column(
+            controls=[
+                # 添加标题栏
+                title_bar.build(),
+                # 主内容区域
+                ft.Row(
                     controls=[
-                        ft.Container(
+                        # 主导航栏
+                        ft.Container(  # 将 NavigationRail 包装在 Container 中
                             content=self.nav_rail.build(),
-                            padding=0,
+                            padding=0,  # 移除内边距
                         ),
-                        ft.Container(
+                        # 分割线
+                        ft.Container(  # 将分割线包装在 Container 中
                             content=ft.VerticalDivider(
                                 width=1,
                                 color=self.theme_colors.divider_color,
                             ),
-                            padding=ft.padding.only(left=0, right=0),
-                            margin=ft.margin.all(0),
+                            padding=ft.padding.only(
+                                left=0, right=0),  # 移除水平内边距
+                            margin=ft.margin.all(0),  # 移除外边距
                         ),
+                        # 内容区域（包含子导航和实际内容）
                         ft.Container(
                             content=self.content_area,
-                            padding=ft.padding.only(left=10),
+                            padding=ft.padding.only(left=0),  # 移除水平内边距
                             expand=True,
                         ),
                     ],
-                    spacing=0,
-                    tight=True,
+                    expand=True,
+                    spacing=0,  # 设置间距为0
+                    tight=True,  # 添加这个属性使元素紧密排列
                 ),
-                expand=True,
-            )
-        )
-
-        return ft.Column(
-            controls=controls,
-            spacing=0,
+            ],
             expand=True,
+            spacing=0,
         )
 
     def _handle_nav_change(self, e):
-        """处理导航变化"""
+        """处理导航栏切换事件"""
         selected_index = e.control.selected_index
-        if selected_index == 0:  # 展开/收起按钮
+        
+        # 如果点击了展开/收起按钮
+        if selected_index == 0:
             self._handle_nav_toggle(e)
             # 恢复之前选中的导航项
             e.control.selected_index = self.current_page_index + 1
             self.page.update()
-        else:
-            actual_index = selected_index - 1  # 因为添加了展开/收起按钮，所以实际索引需要-1
-            if actual_index == len(self.nav_items) - 1:  # Exit button
-                self.page.window.close()
-            else:
-                self.current_page_index = actual_index
-                self.content_area.content = self.pages[actual_index].content
-                self.page.update()
+            return
+            
+        # 因为添加了展开/收起按钮，所以实际索引需要-1
+        actual_index = selected_index - 1
+        
+        # 如果点击了退出按钮 (修正退出按钮的判断逻辑)
+        if actual_index == len(self.pages):
+            self.page.window.close()
+            return
+            
+        # 更新当前页面索引
+        self.current_page_index = actual_index
+        
+        # 更新内容区域
+        page = self.pages[actual_index]
+        page.content = page.build()  # 重新构建页面内容
+        self.content_area.content = page.content
+        self.page.update()
 
     def _handle_nav_toggle(self, e):
         """处理导航栏展开/收起"""
         self.is_nav_extended = not self.is_nav_extended
-        # 更新主容器的内容
         self.main_container.content = self._create_layout()
         self.page.update()
 
@@ -340,6 +350,7 @@ class App:
             page_instance.page = self.page
 
         self._init_theme()  # 先初始化主题
+
         self._init_window()  # 再初始化窗口
 
         # 添加主容器到页面
@@ -363,6 +374,7 @@ class App:
         self.nav_items.append(nav_item)
 
         if self.content_area is None:
+            # 创建内容区域
             self.content_area = ft.Container(
                 content=page.content,
                 expand=True,
@@ -393,7 +405,7 @@ class App:
 
         # 更新导航栏的主题颜色
         if self.nav_rail:
-            self.nav_rail.theme_colors = self.theme_colors
+            self.nav_rail.bgcolor = self.theme_colors.nav_color
 
         # 更新 macOS 标题栏颜色
         if self.page.platform.value == "macos":
@@ -401,7 +413,9 @@ class App:
 
         # 更新所有页面的主题
         for page in self.pages.values():
-            page.update_theme(self.theme_colors, theme_mode)
+            page.theme_colors = self.theme_colors
+            page.theme_mode = theme_mode
+            page.content = page.build()  # 重新构建页面内容
 
         # 更新当前页面内容
         if self.content_area:

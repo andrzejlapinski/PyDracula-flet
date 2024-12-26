@@ -1,7 +1,6 @@
 import flet as ft
 from abc import ABC, abstractmethod
-from typing import Callable
-from flet import Container, Column, Text, padding, margin, Page, border, border_radius
+from typing import Callable, List, Dict, Any, Optional
 from .theme import ThemeColors
 from core.config_manager import ConfigManager
 
@@ -12,7 +11,8 @@ class BasePage(ABC):
                 theme_colors: ThemeColors = None,
                 theme_mode: str = "dark",
                 title: str = "",
-                page: ft.Page = None
+                page: ft.Page = None,
+                has_sub_nav: bool = False
         ):
         
         self.on_theme_changed = on_theme_changed
@@ -23,8 +23,10 @@ class BasePage(ABC):
         self._is_rebuilding = False  # 添加重建标志
         self._state = {}  # 添加状态存储
         self.proxies = None  # 添加代理设置
-        self.content = self.build()
+        self.has_sub_nav = has_sub_nav  # 是否启用子导航
+        
         self.config_manager = ConfigManager()
+        self.content = self.build()
         
     def show_dialog(self, message: str, title: str = "提示"):
         """
@@ -92,33 +94,33 @@ class BasePage(ABC):
         """检查页面是否正在重建"""
         return getattr(self, '_is_rebuilding', False)
 
-    def build_title(self) -> Container:
+    def build_title(self) -> ft.Container:
         """构建统一的标题栏"""
-        container = Container(
-            content=Text(
+        container = ft.Container(
+            content=ft.Text(
                 self.title,
                 size=23,
                 color=self.theme_colors.text_color,
             ),
-            padding=padding.only(top=10, bottom=10, left=30),
+            padding=ft.padding.only(top=10, bottom=10, left=30),
             bgcolor=self.theme_colors.nav_color,
-            margin=margin.only(left=-10, bottom=20),
+            margin=ft.margin.only(bottom=20) if not self.has_sub_nav else ft.margin.only(bottom=0),
             width=5000,
         )
         return container
 
     @abstractmethod
-    def build_content(self) -> Column:
+    def build_content(self) -> ft.Column:
         """子类实现此方法来构建页面主要内容"""
         pass
 
-    def build(self) -> Container:
+    def build(self) -> ft.Container:
         """构建完整的页面布局"""
-        container = Container(
-            content=Column(
+        container = ft.Container(
+            content=ft.Column(
                 controls=[
                     self.build_title(),
-                    Container(
+                    ft.Container(
                         content=self.build_content(),
                         expand=True,
                         bgcolor=self.theme_colors.bg_color,
@@ -132,35 +134,35 @@ class BasePage(ABC):
         )
         return container
 
-    def build_section(self, title: str = None, content: ft.Control = None, expand=1) -> Container:
+    def build_section(self, title: str = None, content: ft.Control = None, expand=False) -> ft.Container:
         """构建一个带标题的部分"""
         controls = []
 
         if title:
-            title_text = Text(title, size=22, weight="bold",
-                              color=self.theme_colors.text_color)
+            title_text = ft.Text(title, size=22, weight="bold",
+                            color=self.theme_colors.text_color)
             controls.append(title_text)
 
         if content:
-            if not isinstance(content, Container):
-                content = Container(
+            if not isinstance(content, ft.Container):
+                content = ft.Container(
                     content=content,
                     expand=True,
                 )
             controls.append(content)
 
-        section_content = Column(
+        section_content = ft.Column(
             controls=controls,
             spacing=10,
         )
 
-        container = Container(
+        container = ft.Container(
             content=section_content,
             bgcolor=self.theme_colors.card_color,
             padding=20 if title else 10,
-            border_radius=border_radius.all(10),
-            border=border.all(1, self.theme_colors.divider_color),
-            margin=padding.symmetric(horizontal=20),
+            border_radius=ft.border_radius.all(10),
+            border=ft.border.all(1, self.theme_colors.divider_color),
+            margin=ft.padding.symmetric(horizontal=10, vertical=5),
             expand=expand,
         )
 

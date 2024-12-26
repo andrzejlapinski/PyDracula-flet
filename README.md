@@ -12,18 +12,21 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 
 ## 特性
 
-- 🌓 深色/浅色主题支持
-- 📱 响应式布局
-- 🎯 可配置的导航栏
-- ⚙️ 配置持久化
+- 🌓 深色/浅色主题支持，可自定义主题色
+- 📱 响应式布局，支持窗口大小调整
+- 🎯 可配置的导航栏，支持主导航和子导航
+- ⚙️ 配置持久化，自动保存用户偏好
 - 🎨 现代化 UI 设计
-- 🎢 添加轮播图组件
+- 🎢 内置轮播图组件
+- 💾 本地存储支持
+- 🖥️ 跨平台支持 (macOS, Windows)
 
 # 项目预览
 
 ## 图片预览
-![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/images/index.png)
-![图片预览](https://raw.githubusercontent.com/clarencejh/PyDracula-flet/refs/heads/main/assets/images/index_2.png)
+| ![Image 1](path/to/image1.png) | ![Image 2](path/to/image2.png) |
+|----------------------------------|----------------------------------|
+| ![Image 3](path/to/image3.png) | ![Image 4](path/to/image4.png) |
 
 ## 安装
 
@@ -49,22 +52,29 @@ flet run main.py
 
 ```
 PyDracula-flet/
-├── config/             # 配置文件
-│   ├── config.ini     # 应用配置
-│   └── version.py     # 版本信息
-├── core/              # 核心功能
-│   ├── app.py        # 主应用类
-│   ├── base_page.py  # 基础页面类
-│   ├── theme.py      # 主题管理
-│   └── config_manager.py  # 配置管理
-├── components/       # 组件
+├── assets/            # 静态资源文件
+│   └── images/       # 图片资源
+├── components/        # 可重用组件
 │   └── fletcarousel/ # 轮播图组件
+├── config/           # 配置文件
+│   ├── config.ini   # 应用配置
+│   └── version.py   # 版本信息
+├── core/             # 核心功能
+│   ├── app.py       # 主应用类
+│   ├── base_page.py # 基础页面类
+│   ├── theme.py     # 主题管理
+│   └── config_manager.py  # 配置管理
 ├── pages/            # 页面
 │   ├── home.py      # 主页
 │   ├── widgets.py   # 组件展示
 │   ├── inputs.py    # 输入控件
-│   └── settings.py  # 设置页面
-└── main.py          # 应用入口
+│   ├── carousel.py  # 轮播图示例
+│   ├── settings.py  # 设置页面
+│   └── sub_navigation_bar/ # 子导航示例
+├── storage/          # 本地存储
+├── utils/           # 工具函数
+├── main.py          # 应用入口
+└── requirements.txt  # 项目依赖
 ```
 
 ## 如何添加新页面
@@ -180,9 +190,102 @@ def build_content(self) -> Column:
     )
 ```
 
+## 主题系统
+
+### 颜色配置
+
+主题系统提供了以下颜色变量：
+
+- `bg_color`: 背景色
+- `nav_color`: 导航栏颜色
+- `card_color`: 卡片颜色
+- `text_color`: 文本颜色
+- `divider_color`: 分隔线颜色
+
+可以在 `core/theme.py` 中自定义这些颜色。
+
+### 主题切换
+
+应用支持深色和浅色主题切换，并且会自动保存用户的主题偏好。主题切换通过以下方式实现：
+
+1. 在设置页面中切换
+2. 通过配置文件预设
+3. 程序启动时自动加载上次的主题设置
+
+
+## 配置管理
+
+使用 `ConfigManager` 类管理配置：
+
+```python
+from core.config_manager import ConfigManager
+
+config_manager = ConfigManager()
+value = config_manager.get("Section", "key", "default_value")
+config_manager.set("Section", "key", "new_value")
+```
+
+## 开发指南
+
+### 添加新页面
+
+1. 在 `pages` 目录下创建新的页面文件
+2. 继承 `BasePage` 类
+3. 在 `main.py` 中注册页面
+
+4. 如果需要添加子导航栏，请在 `pages/sub_navigation_bar/app.py` 中添加
+
+示例：
+
+```python
+from core.base_page import BasePage
+from flet import Column, Container, Text
+
+class MyPage(BasePage):
+    def __init__(self, **kwargs):
+        super().__init__(title="新页面", **kwargs)
+
+    def build_content(self) -> Column:
+        return Column(
+            controls=[
+                self.build_section(
+                    "标题",
+                    Container(
+                        content=Text("内容")
+                    )
+                )
+            ],
+            scroll="auto",
+            spacing=20,
+        )
+```
+
+### 状态管理
+
+为了支持主题切换时保持状态，请将控件定义为类属性：
+
+```python
+class MyPage(BasePage):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def build_content(self):
+        self.my_text = Text("Hello")  # ✅ 正确
+        text = Text("World")  # ❌ 错误
+        return Column(controls=[self.my_text])
+```
+
+### 最佳实践
+
+1. 使用 `build_section` 方法创建独立的内容区块
+2. 保持适当的代码组织和文件结构
+3. 遵循 Python 代码规范
+4. 添加适当的注释和文档
+5. 使用类型提示增加代码可读性
+
 ## 其他
 
-1. 轮播图组件，使用的是 [fletcarousel](https://github.com/clarencejh/fletcarousel) ，感谢作者的贡献。
+1. 轮播图组件使用的是 [fletcarousel](https://github.com/clarencejh/fletcarousel)
 2. flet 中文文档: [https://flet.qiannianlu.com/docs/getting-started/](https://flet.qiannianlu.com/docs/getting-started/)
 3. flet 官方文档: [https://flet.dev/docs/](https://flet.dev/docs/)
 

@@ -1,11 +1,10 @@
 import flet as ft
 from core.app import App, AppConfig
 from pages.home import HomePage
-from pages.widgets import WidgetsPage
+from pages.sub_navigation_bar.app import SubNavigationBar
 from pages.settings import SettingsPage
 from pages.inputs import InputsPage
 from pages.carousel import CarouselPage
-from pages.expansion_nav import ExpansionNavPage
 from core.config_manager import ConfigManager
 
 
@@ -17,6 +16,10 @@ def main(page: ft.Page):
     if page.platform.value != "macos":
         # 设置字体, 兼容windows
         page.theme = ft.Theme(font_family="Microsoft YaHei UI")
+    
+    # # 设置窗口透明度和背景色（实现模糊效果）
+    # page.window.opacity = 0.95  # 设置透明度 (0.0 - 1.0)
+    # page.window.bgcolor = ft.Colors.with_opacity(0.8, ft.Colors.BLACK)  # 半透明背景
     
     # 创建配置管理器
     config_manager = ConfigManager()
@@ -38,31 +41,24 @@ def main(page: ft.Page):
     # 创建应用实例
     app = App(config)
     
-    # 注册页面和导航项
-    app.register_page(
-        nav_item={"icon": ft.Icons.HOME_ROUNDED, "label": "主页"},
-        page=HomePage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
-    )
-    
-    app.register_page(
-        nav_item={"icon": ft.Icons.WIDGETS_ROUNDED, "label": "按钮组件"},
-        page=WidgetsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
-    )
-    
-    app.register_page(
-        nav_item={"icon": ft.Icons.INPUT_ROUNDED, "label": "输入控件"},
-        page=InputsPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
-    )
-    
-    app.register_page(
-        nav_item={"icon": ft.Icons.SLIDESHOW_ROUNDED, "label": "轮播图"},
-        page=CarouselPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
-    )
-    
-    # app.register_page(
-    #     nav_item={"icon": ft.Icons.MENU_ROUNDED, "label": "导航菜单"},
-    #     page=ExpansionNavPage(theme_colors=app.theme_colors, theme_mode=config.theme_mode, page=page)
-    # )
+    # 注册页面和导航项, 在这里添加页面
+    pages = [
+        {"icon": ft.Icons.HOME_ROUNDED, "label": "主页", "page_class": HomePage},
+        # 要创建其他带子导航的页面, 可以直接复制 sub_navigation_bar 文件夹,然后重命名
+        {"icon": ft.Icons.WIDGETS_ROUNDED, "label": "子导航", "page_class": SubNavigationBar},
+        {"icon": ft.Icons.INPUT_ROUNDED, "label": "输入控件", "page_class": InputsPage},
+        {"icon": ft.Icons.SLIDESHOW_ROUNDED, "label": "轮播图", "page_class": CarouselPage},
+    ]
+
+    for page_info in pages:
+        app.register_page(
+            nav_item={"icon": page_info["icon"], "label": page_info["label"]},
+            page=page_info["page_class"](
+                theme_colors=app.theme_colors,
+                theme_mode=config.theme_mode,
+                page=page
+            )
+        )
     
     app.register_page(
         nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "label": "设置"},
