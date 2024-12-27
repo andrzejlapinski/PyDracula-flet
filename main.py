@@ -37,7 +37,7 @@ def main(page: ft.Page):
     # 设置主题色
     theme_color = config_manager.get("Theme", "color", ft.Colors.BLUE)
     page.theme = ft.Theme(color_scheme_seed=theme_color)
-    
+
     # 创建应用实例
     app = App(config)
     

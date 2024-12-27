@@ -1,5 +1,5 @@
 import flet as ft
-from typing import Callable, Dict, Any, List
+from typing import Callable, Dict,  List
 from .theme import ThemeColors
 from .base_page import BasePage
 
@@ -56,7 +56,6 @@ class NavRail:
         destinations = [
             ft.NavigationRailDestination(
                 icon=ft.Icons.MENU_OPEN,
-                selected_icon=ft.Icons.MENU,
                 label="Hide",
                 padding=ft.padding.only(left=10) if self.is_extended else None,
             )
@@ -65,10 +64,12 @@ class NavRail:
         # 添加其他导航项
         destinations.extend([
             ft.NavigationRailDestination(
-                icon=item["icon"],
-                selected_icon=item["icon"],
+                # icon=item["icon"],
+                # selected_icon=item["icon"],
                 label=item["label"],
-                padding=ft.padding.only(left=10) if self.is_extended else None,
+                padding=ft.padding.only(left=0) if self.is_extended else None,
+                icon=ft.Icon(item["icon"], color=self.theme_colors.text_color),
+                selected_icon=ft.Icon(item["icon"], color=self.theme_colors.current_color),
             ) for item in self.nav_items
         ])
         
@@ -77,6 +78,9 @@ class NavRail:
     def build(self) -> ft.NavigationRail:
         """构建并返回导航栏对象"""
         nav = ft.NavigationRail(
+            indicator_color = self.theme_colors.nav_color,
+            bgcolor=self.theme_colors.nav_color,
+            selected_label_text_style=ft.TextStyle(color=self.theme_colors.current_color),
             selected_index=self.selected_index + 1,  # 因为添加了展开/收起按钮，所以索引需要+1            
             # 修改这2个属性来修改导航栏的显示方式
             label_type="selected" if self.is_extended else "none",
@@ -84,10 +88,8 @@ class NavRail:
             # label_type=ft.NavigationRailLabelType.ALL,
             # extended=False,
             
-            
             min_width=60,
             min_extended_width=150,
-            bgcolor=self.theme_colors.nav_color,
             leading=self._build_title(),
             destinations=self._build_destinations(),
             on_change=self.on_change,
@@ -267,7 +269,7 @@ class App:
             app_title=self.config.app_title,
         )
         
-        return ft.Column(
+        layout = ft.Column(
             controls=[
                 # 添加标题栏
                 title_bar.build(),
@@ -304,6 +306,8 @@ class App:
             expand=True,
             spacing=0,
         )
+        
+        return layout
 
     def _handle_nav_change(self, e):
         """处理导航栏切换事件"""
@@ -402,6 +406,7 @@ class App:
 
         # 更新主题颜色
         self.theme_colors = ThemeColors(is_dark=is_dark)
+        self.theme_colors.current_color = self.page.theme.color_scheme_seed
 
         # 更新导航栏的主题颜色
         if self.nav_rail:

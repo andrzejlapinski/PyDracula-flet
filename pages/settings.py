@@ -61,13 +61,14 @@ class SettingsPage(BasePage):
                         ])
                     )
                     for name, color in [
-                        ("蓝色", ft.Colors.BLUE.value),
-                        ("绿色", ft.Colors.GREEN.value),
-                        ("红色", ft.Colors.RED.value),
-                        ("紫色", ft.Colors.PURPLE.value),
-                        ("橙色", ft.Colors.ORANGE.value),
-                        ("粉色", ft.Colors.PINK.value),
-                        ("青色", ft.Colors.CYAN.value)
+                        ("淡蓝色", "#6E9ECF"),
+                        ("靛蓝", "#4F46E5"),
+                        ("翠绿", "#10B981"),
+                        ("珊瑚", "#F43F5E"),
+                        ("琥珀", "#F59E0B"),
+                        ("紫水晶", "#8B5CF6"),
+                        ("青碧", "#06B6D4"),
+                        ("玫瑰金", "#F472B6")
                     ]
                 ],
                 on_change=lambda e: self._handle_theme_color_change(e.data),
@@ -244,6 +245,11 @@ class SettingsPage(BasePage):
         )
         if self.config_manager:
             self.config_manager.set("Theme", "color", color)
+            
+        if self.on_theme_changed:
+            self.theme_colors.current_color = self.page.theme.color_scheme_seed
+            theme_mode = self.config_manager.get("Theme", "mode", "dark")
+            self.on_theme_changed(theme_mode)
         self.page.update()
 
     def _handle_nav_rail_change(self, e):

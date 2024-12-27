@@ -51,10 +51,12 @@ class SubNavigationBar(BasePage):
             min_width=60,
             # min_extended_width=100,
             bgcolor=self.theme_colors.sub_nav_color,
+            indicator_color=self.theme_colors.sub_nav_color,
+            selected_label_text_style=ft.TextStyle(color=self.theme_colors.current_color),
             destinations=[
                 ft.NavigationRailDestination(
-                    icon=page_info["icon"],
-                    selected_icon=page_info["icon"],
+                    icon=ft.Icon(page_info["icon"], color=self.theme_colors.text_color),
+                    selected_icon=ft.Icon(page_info["icon"], color=self.theme_colors.current_color),
                     label=page_info["label"],
                 )
                 for page_info in self._pages

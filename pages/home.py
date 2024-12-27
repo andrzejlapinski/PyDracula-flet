@@ -58,21 +58,40 @@ class HomePage(BasePage):
             # 忽略在页面重建过程中的更新错误
             pass
 
+    def show_img_dialog(self, e, img_src):
+        self.image_dialog.content.src = img_src
+        self.page.open(self.image_dialog)
+        self.page.update()
+    
+    def close_img_dialog(self, e):
+        self.page.close(self.image_dialog)
+        self.page.update()
+
     def _build_carousel(self) -> ft.Container:
         """构建轮播图"""
         # 根据窗口的大小来修改轮播图显示的数量
+        # 添加图片对话框
+        self.image_dialog = ft.AlertDialog(
+            content=ft.Image(
+                width=800,
+                fit=ft.ImageFit.CONTAIN,
+            ),
+            actions=[
+                ft.TextButton("关闭", on_click=self.close_img_dialog),
+            ],
+        )
         items_count = 4 if self.page.width > 800 else 3
 
         # 轮播图项目
         carousel_items = [
             ft.Container(
-                content=ft.Text(value=str(i), size=20),
-                height=200,
-                width=300,
-                bgcolor=self.theme_colors.divider_color,
-                border_radius=15,
-                alignment=ft.alignment.center,
-            ) for i in range(10)
+                ft.Image(
+                    src=f"/images/screenshot{i}.png",
+                    width=300,
+                    fit=ft.ImageFit.CONTAIN,
+                ),
+                on_click=lambda e, img_num=i: self.show_img_dialog(e, f"/images/screenshot{img_num}.png"),
+            ) for i in range(1, 5)            
         ]
 
         # 导航按钮
@@ -118,7 +137,7 @@ class HomePage(BasePage):
         """
         子线程的方式：加载按钮动画
         
-        所有的点击事件都需要一个默认参数，所��添加e参数
+        所有的点击事件都需要一个默认参数，所以添加e参数
         """
         self.set_button_loading(self.loading_button_thread, True)
         self.loading_button_thread.disabled = True
@@ -224,7 +243,7 @@ class HomePage(BasePage):
         )
 
     def _build_progress_section(self) -> ft.Container:
-        """构建进度部分"""
+        """构建进度���分"""
         container = ft.Container(
             content=ft.Column([
                 ft.Text("Project Progress", size=20,
