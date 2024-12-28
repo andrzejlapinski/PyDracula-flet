@@ -80,7 +80,7 @@ class HomePage(BasePage):
                 ft.TextButton("关闭", on_click=self.close_img_dialog),
             ],
         )
-        items_count = 4 if self.page.width > 800 else 3
+        items_count = int((self.page.window.width - 400) // 300)
 
         # 轮播图项目
         carousel_items = [

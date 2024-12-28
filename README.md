@@ -1,6 +1,6 @@
 # PyDracula-flet
 
-PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应用程序模版。它提供了一套完整的主题系统、导航系统和配置管理。
+PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应用程序模版。它提供了一套完整的主题系统、导航系统和配置管理, flet template。
 
 [PyDracula](https://github.com/Wanderson-Magalhaes/Modern_GUI_PyDracula_PySide6_or_PyQt6) 是一个基于 PyQt5 构建的现代化桌面应用程序模版。
 
@@ -288,7 +288,6 @@ class MyPage(BasePage):
 1. 轮播图组件使用的是 [fletcarousel](https://github.com/clarencejh/fletcarousel)
 2. flet 中文文档: [https://flet.qiannianlu.com/docs/getting-started/](https://flet.qiannianlu.com/docs/getting-started/)
 3. flet 官方文档: [https://flet.dev/docs/](https://flet.dev/docs/)
-4. 组件库推荐:[https://github.com/LegendaryPistachio/FletCustomRepo](https://github.com/LegendaryPistachio/FletCustomRepo)
 
 ## 单独的运行文件
 

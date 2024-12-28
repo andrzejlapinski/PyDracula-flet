@@ -332,10 +332,8 @@ class App:
         # 更新当前页面索引
         self.current_page_index = actual_index
         
-        # 更新内容区域
-        page = self.pages[actual_index]
-        page.content = page.build()  # 重新构建页面内容
-        self.content_area.content = page.content
+        # 更新内容区域, 切换页面时不重建页面
+        self.content_area.content = self.pages[actual_index].content
         self.page.update()
 
     def _handle_nav_toggle(self, e):
