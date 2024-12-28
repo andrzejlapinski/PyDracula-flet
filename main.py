@@ -12,11 +12,6 @@ def main(page: ft.Page):
     # 设置资源目录
     page.assets_dir = "assets"
     
-    # 如果是macos则不设置字体
-    if page.platform.value != "macos":
-        # 设置字体, 兼容windows
-        page.theme = ft.Theme(font_family="Microsoft YaHei UI")
-    
     # # 设置窗口透明度和背景色（实现模糊效果）
     # page.window.opacity = 0.95  # 设置透明度 (0.0 - 1.0)
     # page.window.bgcolor = ft.Colors.with_opacity(0.8, ft.Colors.BLACK)  # 半透明背景
@@ -34,9 +29,14 @@ def main(page: ft.Page):
     config.window_min_height = int(config_manager.get("Window", "min_height", "400"))
     config.nav_rail_extended = config_manager.get("Theme", "nav_rail_extended", "true").lower() == "true"
     
-    # 设置主题色
+    # 设置字体和主题色
+    font_family = config.font_dict.get(page.platform.value, ["Roboto"])[0]
     theme_color = config_manager.get("Theme", "color", ft.Colors.BLUE)
-    page.theme = ft.Theme(color_scheme_seed=theme_color)
+
+    page.theme = ft.Theme(
+        color_scheme_seed=theme_color,
+        font_family=font_family
+        )
 
     # 创建应用实例
     app = App(config)

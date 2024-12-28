@@ -13,6 +13,28 @@ class AppConfig:
         self.window_min_width: int = 500
         self.window_min_height: int = 400
         self.nav_rail_extended: bool = True
+        # 根据系统设置字体
+    
+    @property
+    def font_dict(self):
+        return {
+            "windows": [
+                "Segoe UI",
+                "Microsoft YaHei UI",
+                "Arial",
+            ],
+            "macos": [
+                "SF Pro",
+                "Helvetica Neue",
+                "PingFang SC",
+                "Hiragino Sans GB",
+            ],
+            "linux": [
+                "Ubuntu",
+                "Noto Sans CJK SC",
+                "DejaVu Sans",
+            ],
+        }
 
 
 class NavRail:

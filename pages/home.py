@@ -127,7 +127,7 @@ class HomePage(BasePage):
         """
         self.set_button_loading(self.loading_button, True)
         self.loading_button.disabled = True
-        self.show_dialog("按钮将被禁用，并且动画将持续10秒", "加载中")
+        self.show_snackbar("按钮将被禁用，并且动画将持续10秒")
         await asyncio.sleep(10)
         self.set_button_loading(self.loading_button, False)
         self.loading_button.disabled = False

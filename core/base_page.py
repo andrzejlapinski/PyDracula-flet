@@ -46,6 +46,21 @@ class BasePage(ABC):
         )
         self.page.open(dialog)
         self.page.update()
+    
+    def show_snackbar(self, message: str):
+        """
+        一条带有可选操作的轻量级消息，会在屏幕底部短暂显示。
+        
+        了解更多请访问
+        url: https://flet.qiannianlu.com/docs/controls/snackbar
+        """
+        snackbar = ft.SnackBar(
+            content=ft.Text(message),
+            show_close_icon=True,
+            close_icon_color=self.theme_colors.accent_color,
+        )
+        self.page.open(snackbar)
+        self.page.update()
 
     def save_state(self):
         """保存页面状态，子类可以重写此方法来保存额外的状态"""
