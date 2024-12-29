@@ -1,11 +1,14 @@
 import flet as ft
 from abc import ABC, abstractmethod
-from typing import Callable, List, Dict, Any, Optional
+from typing import Callable
+
+from components.stacked_notifications import NotificationManager
 from .theme import ThemeColors
 from core.config_manager import ConfigManager
 
 
 class BasePage(ABC):
+    _notification_manager = None
     def __init__(self,
                 on_theme_changed: Callable = None,
                 theme_colors: ThemeColors = None,
@@ -26,6 +29,11 @@ class BasePage(ABC):
         self.has_sub_nav = has_sub_nav  # 是否启用子导航
         
         self.config_manager = ConfigManager()
+        
+        # 初始化 NotificationManager
+        if page is not None and BasePage._notification_manager is None:
+            BasePage._notification_manager = NotificationManager(page)
+            
         self.content = self.build()
         
     def show_dialog(self, message: str, title: str = "提示"):
@@ -61,6 +69,28 @@ class BasePage(ABC):
         )
         self.page.open(snackbar)
         self.page.update()
+    
+    @property
+    def notifications(self):
+        """
+        提供对 NotificationManager 的访问
+        如果 NotificationManager 尚未初始化，会引发异常
+        """
+        if BasePage._notification_manager is None:
+            raise RuntimeError("NotificationManager has not been initialized. Make sure 'page' is provided in the constructor.")
+        return BasePage._notification_manager
+
+    def show_notification(self, message: str, type: str = "INFO", duration: float = None, action: ft.Control = None):
+        """
+        便捷方法用于显示通知
+        
+        参数:
+        message (str): 要显示的通知消息。
+        type (str): 通知的类型，默认为 "INFO"。可选值包括 "INFO", "WARNING", "SUCCESS", "ERROR" 等。
+        duration (float): 通知显示的持续时间，单位为秒。默认为 None，表示持续显示直到用户关闭。
+        action (ft.Control): 可选的操作控件，用户可以通过该控件进行交互。
+        """
+        self.notifications.show(message, type=type, duration=duration, action=action)
 
     def save_state(self):
         """保存页面状态，子类可以重写此方法来保存额外的状态"""

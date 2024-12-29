@@ -7,7 +7,8 @@ from .attributes import (
     HintLine
 )
 
+__all__ = ["BasicAnimatedHorizontalCarousel", "BasicHorizontalCarousel", "AutoCycle", "HintLine"]
 
 
-# thanks：naderidev
+# Thanks：naderidev
 # github：https://github.com/naderidev/flet-carousel

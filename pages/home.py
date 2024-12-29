@@ -208,8 +208,37 @@ class HomePage(BasePage):
             width=200,
             height=150,
         )
+        
+        self.notification_button = ft.FloatingActionButton(
+            icon=ft.Icons.NOTIFICATIONS,
+            text="显示通知",
+            height=30,
+            on_click=lambda _: self.show_notification("这是一条可叠加通知"),
+        )
+        
+        self.notification_clear_button = ft.FloatingActionButton(
+            icon=ft.Icons.CLEAR,
+            text="清除所有通知",
+            height=30,
+            on_click=lambda _: self.notifications.clear(),
+        )
+        
+        self.notification_button_show = ft.Container(
+            content=ft.Column([
+                ft.Text("通知测试", color=self.theme_colors.text_color, size=20),
+                self.notification_button,
+                self.notification_clear_button,
+            ]),
+            bgcolor=self.theme_colors.card_color,
+            padding=20,
+            border_radius=ft.border_radius.all(10),
+            width=200,
+            height=150,
+        )
+        
+        
 
-        stats_row = ft.Row([projects_card, tasks_card, self.loading_button_show ], spacing=20)
+        stats_row = ft.Row([projects_card, tasks_card, self.loading_button_show, self.notification_button_show], spacing=20)
         container = ft.Container(content=stats_row, padding=20)
 
         return container

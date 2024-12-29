@@ -20,6 +20,7 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 - 🎢 内置轮播图组件
 - 💾 本地存储支持
 - 🖥️ 跨平台支持 (macOS, Windows)
+- 📢 内置多种通知系统
 
 # 项目预览
 
