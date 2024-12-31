@@ -1,6 +1,6 @@
 import flet as ft
 from core.base_page import BasePage
-from . import FloatingButtonsPage, OutlinedButtonsPage, TextButtonsPage, IconButtonsPage, MenuButtonsPage, SegmentedButtonsPage, FilledButtonsPage
+from . import FloatingPage, TimePickerPage, ChartPage, ButtonsPage
 
 
 class SubNavigationBar(BasePage):
@@ -15,21 +15,12 @@ class SubNavigationBar(BasePage):
         """构建页面内容"""
         # 定义子页面
         self._pages = [
-            {"icon": ft.Icons.RECTANGLE, "label": "填充按钮", "page_class": FilledButtonsPage},
-            {"icon": ft.Icons.ADD, "label": "浮动按钮", "page_class": FloatingButtonsPage},
-            {"icon": ft.Icons.RECTANGLE, "label": "轮廓按钮", "page_class": OutlinedButtonsPage},
-            {"icon": ft.Icons.TEXT_FIELDS, "label": "文本按钮", "page_class": TextButtonsPage},
-            {"icon": ft.Icons.STAR, "label": "图标按钮", "page_class": IconButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮", "page_class": MenuButtonsPage},
-            # 测试子导航栏滚动
-            {"icon": ft.Icons.MENU, "label": "菜单按钮2", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮3", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮4", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮5", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮6", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮7", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮8", "page_class": MenuButtonsPage},
-            {"icon": ft.Icons.MENU, "label": "菜单按钮9", "page_class": MenuButtonsPage},
+            {"icon": ft.Icons.RECTANGLE, "label": "按钮", "page_class": ButtonsPage},
+            {"icon": ft.Icons.ADD, "label": "主页", "page_class": FloatingPage},
+            {"icon": ft.Icons.TEXT_FIELDS, "label": "时间选择", "page_class": TimePickerPage},
+            {"icon": ft.Icons.BAR_CHART, "label": "图表", "page_class": ChartPage},
+            # {"icon": ft.Icons.STAR, "label": "图标按钮", "page_class": IconButtonsPage},
+            # {"icon": ft.Icons.MENU, "label": "菜单按钮", "page_class": MenuButtonsPage},
         ]
 
         # 初始化页面实例
@@ -62,7 +53,7 @@ class SubNavigationBar(BasePage):
                 for page_info in self._pages
             ],
             on_change=self._handle_nav_change,
-            height=len(self._pages) * 50 if len(self._pages) * 50 > self.page.height else self.page.height,
+            height=len(self._pages) * 50 if len(self._pages) * 50 > self.page.window.height else self.page.window.height,
         )
 
         # 将导航栏包装在可滚动容器中

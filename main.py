@@ -12,6 +12,12 @@ def main(page: ft.Page):
     # 设置资源目录
     page.assets_dir = "assets"
     
+    # 设置语言
+    page.locale_configuration = ft.LocaleConfiguration(
+        supported_locales=[ft.Locale("en","Us"),ft.Locale("zh","CN")],
+        current_locale=ft.Locale("zh", "CN")
+    )
+    
     # # 设置窗口透明度和背景色（实现模糊效果）
     # page.window.opacity = 0.95  # 设置透明度 (0.0 - 1.0)
     # page.window.bgcolor = ft.Colors.with_opacity(0.8, ft.Colors.BLACK)  # 半透明背景

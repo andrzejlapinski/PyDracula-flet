@@ -3,7 +3,7 @@ import time
 import flet as ft
 from core.base_page import BasePage
 
-class FloatingButtonsPage(BasePage):
+class FloatingPage(BasePage):
     """浮动按钮示例页面"""
     
     def __init__(self, **kwargs):

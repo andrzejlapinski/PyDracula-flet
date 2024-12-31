@@ -1,5 +1,7 @@
 # PyDracula-flet
 
+[English](README_EN.md) | 简体中文
+
 PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应用程序模版。它提供了一套完整的主题系统、导航系统和配置管理, flet template。
 
 [PyDracula](https://github.com/Wanderson-Magalhaes/Modern_GUI_PyDracula_PySide6_or_PyQt6) 是一个基于 PyQt5 构建的现代化桌面应用程序模版。

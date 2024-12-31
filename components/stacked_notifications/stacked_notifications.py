@@ -41,7 +41,7 @@ class NotificationManager:
         # 设置通知容器
         self.container = ft.Container(
             content=ft.Column([], spacing=10),
-            left=20,                               # 设置通知容器左对齐
+            right=20,                               # 设置通知容器左对齐
             bottom=20,                             # 设置通知容器底部对齐
             width=280,                              # 设置通知容器宽度
         )
