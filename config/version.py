@@ -1,4 +1,4 @@
-VERSION = "0.2.3"
+VERSION = "0.2.4"
 APP_DESCRIPTION = """
 PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应用程序框架。
 它提供了：
@@ -10,6 +10,7 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 - 🎢 内置轮播图组件
 - 💾 本地存储支持
 - 🖥️ 跨平台支持 (macOS, Windows)
+- 📢 内置多种通知系统
 """
 
 GITHUB_URL = "https://github.com/clarencejh/PyDracula-flet" 

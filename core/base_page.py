@@ -80,14 +80,14 @@ class BasePage(ABC):
             raise RuntimeError("NotificationManager has not been initialized. Make sure 'page' is provided in the constructor.")
         return BasePage._notification_manager
 
-    def show_notification(self, message: str, type: str = "INFO", duration: float = None, action: ft.Control = None):
+    def show_notification(self, message: str, type: str = "info", duration: float = None, action: ft.Control = None):
         """
         便捷方法用于显示通知
         
         参数:
         message (str): 要显示的通知消息。
-        type (str): 通知的类型，默认为 "INFO"。可选值包括 "INFO", "WARNING", "SUCCESS", "ERROR" 等。
-        duration (float): 通知显示的持续时间，单位为秒。默认为 None，表示持续显示直到用户关闭。
+        type (str): 通知的类型，默认为 "info"。可选值包括 "info", "warning", "success", "error" 等。
+        duration (float): 通知显示的持续时间，单位为秒。默认为 4s，表示持续显示直到用户关闭。
         action (ft.Control): 可选的操作控件，用户可以通过该控件进行交互。
         """
         self.notifications.show(message, type=type, duration=duration, action=action)

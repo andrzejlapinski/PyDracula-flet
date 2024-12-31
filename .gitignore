@@ -13,6 +13,7 @@ test.py
 .env
 .venv/
 .conda/
+others/
 
 # IDEs and editors
 .vscode/

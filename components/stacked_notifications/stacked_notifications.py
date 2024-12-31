@@ -38,13 +38,16 @@ class NotificationManager:
     def _initialize(self, page: ft.Page):
         self.page = page
         self.notifications: List[ft.Container] = []
+        # 设置通知容器
         self.container = ft.Container(
             content=ft.Column([], spacing=10),
-            right=20,
-            bottom=20,
+            left=20,                               # 设置通知容器左对齐
+            bottom=20,                             # 设置通知容器底部对齐
+            width=280,                              # 设置通知容器宽度
         )
-        self.max_notifications = 5
-        self.default_duration = 3
+        self.max_notifications = 5               # 设置最大通知数量
+        self.default_duration = 3                # 设置默认通知持续时间
+        # 设置通知样式
         self._styles: Dict[str, NotificationStyle] = {
             NotificationType.INFO: NotificationStyle(
                 bgcolor=ft.Colors.BLUE,
