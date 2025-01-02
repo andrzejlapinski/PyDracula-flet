@@ -179,7 +179,7 @@ class BasePage(ABC):
         )
         return container
 
-    def build_section(self, title: str = None, content: ft.Control = None, expand=False) -> ft.Container:
+    def build_section(self, title: str = None, content: ft.Control = None, expand=None) -> ft.Container:
         """构建一个带标题的部分"""
         controls = []
 

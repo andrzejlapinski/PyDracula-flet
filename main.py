@@ -5,6 +5,7 @@ from pages.sub_navigation_bar.app import SubNavigationBar
 from pages.settings import SettingsPage
 from pages.inputs import InputsPage
 from pages.carousel import CarouselPage
+from pages.stack_page import StackPage
 from core.config_manager import ConfigManager
 
 
@@ -17,10 +18,6 @@ def main(page: ft.Page):
         supported_locales=[ft.Locale("en","Us"),ft.Locale("zh","CN")],
         current_locale=ft.Locale("zh", "CN")
     )
-    
-    # # 设置窗口透明度和背景色（实现模糊效果）
-    # page.window.opacity = 0.95  # 设置透明度 (0.0 - 1.0)
-    # page.window.bgcolor = ft.Colors.with_opacity(0.8, ft.Colors.BLACK)  # 半透明背景
     
     # 创建配置管理器
     config_manager = ConfigManager()
@@ -54,6 +51,7 @@ def main(page: ft.Page):
         {"icon": ft.Icons.WIDGETS_ROUNDED, "label": "子导航", "page_class": SubNavigationBar},
         {"icon": ft.Icons.INPUT_ROUNDED, "label": "输入控件", "page_class": InputsPage},
         {"icon": ft.Icons.SLIDESHOW_ROUNDED, "label": "轮播图", "page_class": CarouselPage},
+        {"icon": ft.Icons.STACKED_BAR_CHART, "label": "Stack", "page_class": StackPage},
     ]
 
     for page_info in pages:
