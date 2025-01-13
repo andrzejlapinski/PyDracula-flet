@@ -91,7 +91,9 @@ class TodoApp(ft.Column):
 
         self.items_left = ft.Text("0 项未完成")
 
-        self.width = 600
+        self.width = 700
+        self.height = 700
+        self.scroll = ft.ScrollMode.AUTO
         self.controls = [
             ft.Row(
                 [ft.Text(value="待办事项", theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM)],
@@ -120,7 +122,9 @@ class TodoApp(ft.Column):
                             ),
                         ],
                     ),
+                    ft.TextButton("访问 文档", icon=ft.Icons.OPEN_IN_NEW, url="https://flet.qiannianlu.com/docs/tutorials/python-todo")
                 ],
+                scroll=ft.ScrollMode.AUTO,
             ),
         ]
 
@@ -169,4 +173,4 @@ class TodoPage(BasePage):
         super().__init__(title="Todo", **kwargs)
     
     def build_content(self):
-        return ft.Row(controls=[TodoApp()], alignment=ft.MainAxisAlignment.CENTER)
+        return ft.Row(controls=[TodoApp()], alignment=ft.MainAxisAlignment.CENTER, height=500)

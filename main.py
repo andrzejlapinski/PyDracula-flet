@@ -1,5 +1,6 @@
 import flet as ft
 from app.app import App, AppConfig
+from app.pages.calc import CalcPage
 from app.pages.home import HomePage
 from app.pages.sub_navigation_bar.app import SubNavigationBar
 from app.pages.inputs import InputsPage
@@ -52,6 +53,7 @@ def main(page: ft.Page):
         {"icon": ft.Icons.SLIDESHOW_ROUNDED, "name": "轮播图", "page_class": CarouselPage},
         {"icon": ft.Icons.STACKED_BAR_CHART, "name": "Stack", "page_class": StackPage},
         {"icon": ft.Icons.CHECK_CIRCLE_ROUNDED, "name": "todo", "page_class": TodoPage},
+        {"icon": ft.Icons.CALCULATE, "name": "计算器", "page_class": CalcPage},
     ]
     
     # 注册页面
