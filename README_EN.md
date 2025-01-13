@@ -1,4 +1,4 @@
-# PyDracula-flet
+<h1 align="center">PyDracula-flet</h1>
 
 English | [简体中文](README.md)
 
@@ -26,9 +26,10 @@ PyDracula-flet is a modern desktop application template built with Flet, inspire
 # Project Preview
 
 ## Screenshots
-| ![Image 1](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot1.png?raw=true) | ![Image 2](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot3.png?raw=true) |
-|----------------------------------|----------------------------------|
-| ![Image 3](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot2.png?raw=true) | ![Image 4](https://github.com/clarencejh/PyDracula-flet/blob/main/assets/images/screenshot4.png?raw=true) |
+| ![Image 1](docs/images/screenshot1.png) | ![Image 2](docs/images/screenshot3.png) |
+|-----------------------------------------|-----------------------------------------|
+| ![Image 3](docs/images/screenshot2.png) | ![Image 4](docs/images/screenshot4.png) |
+
 
 ## Installation
 
