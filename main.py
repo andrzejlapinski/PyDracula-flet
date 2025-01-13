@@ -1,12 +1,12 @@
 import flet as ft
-from core.app import App, AppConfig
-from pages.home import HomePage
-from pages.sub_navigation_bar.app import SubNavigationBar
-from pages.settings import SettingsPage
-from pages.inputs import InputsPage
-from pages.carousel import CarouselPage
-from pages.stack_page import StackPage
-from core.config_manager import ConfigManager
+from app.app import App, AppConfig
+from app.pages.home import HomePage
+from app.pages.sub_navigation_bar.app import SubNavigationBar
+from app.pages.inputs import InputsPage
+from app.pages.carousel import CarouselPage
+from app.pages.stack_page import StackPage
+from app.config.config_manager import ConfigManager
+from app.pages.todo import TodoPage
 
 
 def main(page: ft.Page):
@@ -28,9 +28,8 @@ def main(page: ft.Page):
     config.theme_mode = config_manager.get("Theme", "mode", "dark")
     config.window_width = int(config_manager.get("Window", "width", "1300"))
     config.window_height = int(config_manager.get("Window", "height", "800"))
-    config.window_min_width = int(config_manager.get("Window", "min_width", "500"))
-    config.window_min_height = int(config_manager.get("Window", "min_height", "400"))
-    config.nav_rail_extended = config_manager.get("Theme", "nav_rail_extended", "true").lower() == "true"
+    config.window_min_width = int(config_manager.get("Window", "min_width", "800"))
+    config.window_min_height = int(config_manager.get("Window", "min_height", "600"))
     
     # 设置字体和主题色
     font_family = config.font_dict.get(page.platform.value, ["Roboto"])[0]
@@ -39,47 +38,25 @@ def main(page: ft.Page):
     page.theme = ft.Theme(
         color_scheme_seed=theme_color,
         font_family=font_family
-        )
+    )
 
     # 创建应用实例
-    app = App(config)
+    app = App(page=page, config=config)
     
-    # 注册页面和导航项, 在这里添加页面
+    # 定义默认页面, 可以通过自定义 "is_bottom": True 来创建底部按钮
     pages = [
-        {"icon": ft.Icons.HOME_ROUNDED, "label": "主页", "page_class": HomePage},
+        {"icon": ft.Icons.HOME_ROUNDED, "name": "主页", "page_class": HomePage},
         # 要创建其他带子导航的页面, 可以直接复制 sub_navigation_bar 文件夹,然后重命名
-        {"icon": ft.Icons.WIDGETS_ROUNDED, "label": "子导航", "page_class": SubNavigationBar},
-        {"icon": ft.Icons.INPUT_ROUNDED, "label": "输入控件", "page_class": InputsPage},
-        {"icon": ft.Icons.SLIDESHOW_ROUNDED, "label": "轮播图", "page_class": CarouselPage},
-        {"icon": ft.Icons.STACKED_BAR_CHART, "label": "Stack", "page_class": StackPage},
+        {"icon": ft.Icons.WIDGETS_ROUNDED, "name": "子导航", "page_class": SubNavigationBar},
+        {"icon": ft.Icons.INPUT_ROUNDED, "name": "输入控件", "page_class": InputsPage},
+        {"icon": ft.Icons.SLIDESHOW_ROUNDED, "name": "轮播图", "page_class": CarouselPage},
+        {"icon": ft.Icons.STACKED_BAR_CHART, "name": "Stack", "page_class": StackPage},
+        {"icon": ft.Icons.CHECK_CIRCLE_ROUNDED, "name": "todo", "page_class": TodoPage},
     ]
-
-    for page_info in pages:
-        app.register_page(
-            nav_item={"icon": page_info["icon"], "label": page_info["label"]},
-            page=page_info["page_class"](
-                theme_colors=app.theme_colors,
-                theme_mode=config.theme_mode,
-                page=page
-            )
-        )
     
-    app.register_page(
-        nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "label": "设置"},
-        page=SettingsPage(
-            theme_colors=app.theme_colors,
-            theme_mode=config.theme_mode,
-            on_theme_changed=app._update_theme,
-            config_manager=config_manager,
-            page=page,
-            app=app
-        )
-    )
-    
-    # 添加退出导航项
-    app.add_exit_nav()
-    
-    # 初始化应用
+    # 注册页面
+    app.register_pages(pages)
+    app.register_settings_page(config_manager)
     app.init_page(page)
 
 if __name__ == "__main__":

@@ -1,11 +1,13 @@
 import flet as ft
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, TYPE_CHECKING
 
 from components.stacked_notifications import NotificationManager
 from .theme import ThemeColors
-from core.config_manager import ConfigManager
+from app.config.config_manager import ConfigManager
 
+if TYPE_CHECKING:
+    from app.app import App
 
 class BasePage(ABC):
     _notification_manager = None
@@ -15,6 +17,7 @@ class BasePage(ABC):
                 theme_mode: str = "dark",
                 title: str = "",
                 page: ft.Page = None,
+                app: 'App' = None,
                 has_sub_nav: bool = False
         ):
         
@@ -27,7 +30,7 @@ class BasePage(ABC):
         self._state = {}  # 添加状态存储
         self.proxies = None  # 添加代理设置
         self.has_sub_nav = has_sub_nav  # 是否启用子导航
-        
+        self.app = app
         self.config_manager = ConfigManager()
         
         # 初始化 NotificationManager
@@ -129,7 +132,6 @@ class BasePage(ABC):
 
         # 重建页面
         self.content = self.build()
-
         # 恢复状态
         self.restore_state(self._state)
 
@@ -148,7 +150,7 @@ class BasePage(ABC):
                 color=self.theme_colors.text_color,
             ),
             padding=ft.padding.only(top=10, bottom=10, left=30),
-            bgcolor=self.theme_colors.nav_color,
+            bgcolor=self.theme_colors.bg_color,
             margin=ft.margin.only(bottom=20) if not self.has_sub_nav else ft.margin.only(bottom=0),
             width=5000,
         )

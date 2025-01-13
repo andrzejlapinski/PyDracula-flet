@@ -1,13 +1,12 @@
 import flet as ft
-from core.base_page import BasePage
-from config.version import VERSION, APP_DESCRIPTION, GITHUB_URL
+from app.base_page import BasePage
+from app.config.version import VERSION, APP_DESCRIPTION, GITHUB_URL
 import requests
 import asyncio
 
 class SettingsPage(BasePage):
-    def __init__(self, config_manager=None, app=None, **kwargs):
+    def __init__(self, config_manager=None, **kwargs):
         self.config_manager = config_manager
-        self.app = app  # 保存app引用
         self.proxy_test_text = None
         self.proxy_url = None
         self.proxy_controls = None
@@ -77,25 +76,12 @@ class SettingsPage(BasePage):
             ),
         ], alignment=ft.MainAxisAlignment.START)
 
-        # 导航栏设置部分
-        nav_rail_settings = ft.Row([
-            ft.Text("导航栏", size=16, color=self.theme_colors.text_color),
-            ft.Container(width=20),
-            ft.Switch(
-                label="默认展开",
-                value=self.config_manager.get("Theme", "nav_rail_extended", "true").lower() == "true",
-                on_change=lambda e: self._handle_nav_rail_change(e),
-            ),
-        ], alignment=ft.MainAxisAlignment.START)
-
         return self.build_section(
             "主题设置",
             ft.Column([
                 theme_mode_row,
                 ft.Container(height=20),
                 theme_colors_row,
-                ft.Container(height=20),
-                nav_rail_settings,
             ], spacing=0)
         )
 
@@ -226,7 +212,7 @@ class SettingsPage(BasePage):
             self._build_proxy_settings(),
             self._build_window_settings(),
             self._build_about_section(),
-        ], scroll="auto", spacing=20)
+        ], scroll=ft.ScrollMode.ALWAYS, spacing=20, height=500)
 
     # 事件处理方法
     def _handle_theme_change(self, e):
@@ -251,15 +237,6 @@ class SettingsPage(BasePage):
             theme_mode = self.config_manager.get("Theme", "mode", "dark")
             self.on_theme_changed(theme_mode)
         self.page.update()
-
-    def _handle_nav_rail_change(self, e):
-        """处理导航栏展开状态变更"""
-        if self.config_manager:
-            is_extended = e.control.value
-            self.config_manager.set("Theme", "nav_rail_extended", str(is_extended))
-            # 更新当前窗口的导航栏状态
-            if self.app:
-                self.app.update_nav_rail_state(is_extended)
 
     def _handle_window_size_change(self, e):
         if self.config_manager:

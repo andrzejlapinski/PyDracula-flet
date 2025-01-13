@@ -9,7 +9,7 @@ PyDracula-flet is a modern desktop application template built with Flet, inspire
 ## Important Notes
 1. The project is primarily developed on macOS. While it should work on Windows, there might be some issues that we're actively working to identify and fix.
 
-2. The theme colors have been tested on macOS. Windows users might experience different color contrasts and may need to adjust colors in `core/theme.py` to better suit their system.
+2. The theme colors have been tested on macOS. Windows users might experience different color contrasts and may need to adjust colors in `app/theme.py` to better suit their system.
 
 ## Features
 
@@ -61,7 +61,7 @@ PyDracula-flet/
 ├── config/           # Configuration files
 │   ├── config.ini   # Application config
 │   └── version.py   # Version info
-├── core/             # Core functionality
+├── app/             # Core functionality
 │   ├── app.py       # Main app class
 │   ├── base_page.py # Base page class
 │   ├── theme.py     # Theme management
@@ -85,7 +85,7 @@ PyDracula-flet/
 
 ```python
 from flet import Column, Container, Text, padding, border_radius
-from core.base_page import BasePage
+from app.base_page import BasePage
 
 class MyPage(BasePage):
     def __init__(self, **kwargs):
@@ -110,7 +110,7 @@ class MyPage(BasePage):
 2. Register the new page in `main.py`:
 
 ```python
-from pages.my_page import MyPage  # Import new page
+from app.pages.my_page import MyPage  # Import new page
 
 def main(page: ft.Page):
     # ... other code remains unchanged ...

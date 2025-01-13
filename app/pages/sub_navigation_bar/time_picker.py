@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import flet as ft
-from core.base_page import BasePage
+from app.base_page import BasePage
 
 class TimePickerPage(BasePage):
     """时间选择器示例页面"""

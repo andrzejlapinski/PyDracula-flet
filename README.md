@@ -10,7 +10,7 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 ## 注意事项
 1. 项目主要在macos开发，windows可能存在一些问题，我会在windows上测试，如果存在问题，我会及时修复。
 
-2. 主题配色，我在macos上测试，windows 的颜色和对比度差异可能比较大，您可以在 `core/theme.py` 中修改颜色，以适应您的windows系统。
+2. 主题配色，我在macos上测试，windows 的颜色和对比度差异可能比较大，您可以在 `app/theme.py` 中修改颜色，以适应您的windows系统。
 
 ## 特性
 
@@ -59,30 +59,27 @@ PyDracula-flet/
 │   └── images/       # 图片资源
 ├── components/        # 可重用组件
 │   └── fletcarousel/ # 轮播图组件
-├── config/           # 配置文件
-│   ├── config.ini   # 应用配置
-│   └── version.py   # 版本信息
-├── core/             # 核心功能
+├── app/             # 核心功能
 │   ├── app.py       # 主应用类
 │   ├── base_page.py # 基础页面类
 │   ├── theme.py     # 主题管理
-│   └── config_manager.py  # 配置管理
-├── pages/            # 页面
-│   ├── home.py      # 主页
-│   ├── widgets.py   # 组件展示
-│   ├── inputs.py    # 输入控件
-│   ├── carousel.py  # 轮播图示例
-│   ├── settings.py  # 设置页面
+│   ├── utils/       # 工具函数
+│   └── pages/            # 页面
+│   │   ├── home.py      # 主页
+│   │   ├── widgets.py   # 组件展示
+│   │   ├── inputs.py    # 输入控件
+│   │   ├── carousel.py  # 轮播图示例
+│   │   ├── settings.py  # 设置页面
 │   └── sub_navigation_bar/ # 子导航示例
+│   └── config_manager.py  # 配置管理
 ├── storage/          # 本地存储
-├── utils/           # 工具函数
 ├── main.py          # 应用入口
 └── requirements.txt  # 项目依赖
 ```
 
 ## 如何添加新页面
 
-1. 在 `pages` 目录下创建新的页面文件，例如 `my_page.py`：
+1. 在 `app/pages` 目录下创建新的页面文件，例如 `my_page.py`：
 
 ```python
 from flet import Column, Container, Text, padding, border_radius
@@ -111,7 +108,7 @@ class MyPage(BasePage):
 2. 在 `main.py` 中注册新页面：
 
 ```python
-from pages.my_page import MyPage  # 导入新页面
+from app.pages.my_page import MyPage  # 导入新页面
 
 def main(page: ft.Page):
     # ... 其他代码保持不变 ...
@@ -134,6 +131,7 @@ def main(page: ft.Page):
 - `self.theme_colors.card_color`: 卡片颜色
 - `self.theme_colors.text_color`: 文本颜色
 - `self.theme_colors.divider_color`: 分隔线颜色
+- `self.theme_colors.accent_color`: 强调色
 
 ### 布局结构
 
@@ -160,7 +158,7 @@ def save_setting(self, section: str, key: str, value: str):
 
 ### 通用方法
 
-通用方法可以添加到 `core/base_page.py` 中。
+通用方法可以添加到 `app/base_page.py` 中。
 
 ### 状态管理限制
 

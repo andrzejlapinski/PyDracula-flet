@@ -1,5 +1,5 @@
 import flet as ft
-from core.base_page import BasePage
+from app.base_page import BasePage
 
 
 class ButtonsPage(BasePage):

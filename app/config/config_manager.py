@@ -2,7 +2,7 @@ import configparser
 import os
 
 class ConfigManager:
-    def __init__(self, config_file="config/config.ini"):
+    def __init__(self, config_file="app/config/config.ini"):
         self.config_file = config_file
         self.config = configparser.ConfigParser()
         self._ensure_config_file()
@@ -18,7 +18,6 @@ class ConfigManager:
         """创建默认配置"""
         self.config["Theme"] = {
             "mode": "dark",
-            "nav_rail_extended": "true",
         }
         self.config["Window"] = {
             "width": "1300",

@@ -1,7 +1,7 @@
 import flet as ft
 from components.fletcarousel.horizontal import BasicHorizontalCarousel
 from components.fletcarousel.attributes import AutoCycle
-from core.base_page import BasePage
+from app.base_page import BasePage
 import asyncio
 import time
 
@@ -85,7 +85,7 @@ class HomePage(BasePage):
         # 轮播图项目
         carousel_items = [
             ft.Container(
-                ft.Image(
+                ft.Image( 
                     src=f"/images/screenshot{i}.png",
                     width=300,
                     fit=ft.ImageFit.CONTAIN,
@@ -236,9 +236,14 @@ class HomePage(BasePage):
             height=150,
         )
         
+        self.button_switch_page = ft.FloatingActionButton(
+            icon=ft.Icons.SWITCH_RIGHT,
+            text="切换到Todo页面",
+            on_click=lambda _: self.app.switch_page("todo"),
+            bgcolor=self.theme_colors.accent_color,
+        )
         
-
-        stats_row = ft.Row([projects_card, tasks_card, self.loading_button_show, self.notification_button_show], spacing=20)
+        stats_row = ft.Row([projects_card, tasks_card, self.loading_button_show, self.notification_button_show, self.button_switch_page], spacing=20)
         container = ft.Container(content=stats_row, padding=20)
 
         return container
