@@ -30,7 +30,7 @@ class BasePage(ABC):
         self._state = {}  # 添加状态存储
         self.proxies = None  # 添加代理设置
         self.has_sub_nav = has_sub_nav  # 是否启用子导航
-        self.app = app
+        self.app : 'App' = app
         self.config_manager = ConfigManager()
         
         # 初始化 NotificationManager

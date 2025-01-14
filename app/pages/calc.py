@@ -110,6 +110,10 @@ class CalculatorApp(ft.Container):
             self.reset()
 
         elif data in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."):
+            if self.is_new_calculation:
+                self.calculation_history = ""
+                self.formula.value = ""
+                self.is_new_calculation = False
             if self.result.value == "0" or self.new_operand:
                 self.result.value = data
                 self.new_operand = False
@@ -130,11 +134,21 @@ class CalculatorApp(ft.Container):
             self.new_operand = True
 
         elif data == "=":
-            self.result.value = self.calculate(
+            result = self.calculate(
                 self.operand1, float(self.result.value), self.operator
             )
-            self.calculation_history += f" = {self.result.value}"  # 完整显示公式和结果
+            # 显示完整计算过程
+            self.formula.value = f"{self.calculation_history} = {result}"
+            # 只显示最终结果
+            self.result.value = str(result)
+            # 重置计算状态
+            self.operand1 = 0
+            self.operator = "+"
             self.new_operand = True
+            # 保留完整计算过程
+            self.calculation_history = f"{self.calculation_history} = {result}"
+            # 标记需要开始新计算
+            self.is_new_calculation = True
 
         elif data == "%":
             self.result.value = str(float(self.result.value) / 100)
@@ -156,9 +170,10 @@ class CalculatorApp(ft.Container):
         self.operator = "+"
         self.operand1 = 0
         self.new_operand = True
-        self.calculation_history = ""  # 清空计算历史
+        self.calculation_history = ""
         self.result.value = "0"
         self.formula.value = ""
+        self.is_new_calculation = True
 
     def format_number(self, num):
         if num % 1 == 0:

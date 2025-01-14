@@ -1,4 +1,5 @@
 import flet as ft
+import os
 from app.base_page import BasePage
 from app.config.version import VERSION, APP_DESCRIPTION, GITHUB_URL
 import requests
@@ -45,7 +46,7 @@ class SettingsPage(BasePage):
         # 主题色选择
         current_color = self.config_manager.get("Theme", "color", ft.Colors.BLUE)
         theme_colors_row = ft.Row([
-            ft.Text("主题色", size=16, color=self.theme_colors.text_color),
+            ft.Text("主题色 ", size=16, color=self.theme_colors.text_color),
             ft.Container(width=20),
             ft.Dropdown(
                 width=200,
@@ -76,12 +77,43 @@ class SettingsPage(BasePage):
             ),
         ], alignment=ft.MainAxisAlignment.START)
 
+        # 背景图片选择
+        current_bg = self.config_manager.get("Theme", "background_image", "images/backgrounds/background1.jpg").split("/")[-1]
+        # 获取背景图片列表
+        bg_dir = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "images", "backgrounds")
+        bg_files = [f for f in os.listdir(bg_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        
+        background_row = ft.Row([
+            ft.Text("背景图片", size=16, color=self.theme_colors.text_color),
+            ft.Container(width=20),
+            ft.Dropdown(
+                width=200,
+                value=current_bg,
+                content_padding=ft.padding.symmetric(horizontal=10),
+                options=[
+                    ft.dropdown.Option(
+                        key=bg_file,
+                        content=ft.Row([
+                            ft.Icon(ft.Icons.IMAGE, color=self.theme_colors.text_color),
+                            ft.Text(f"{bg_file.split('.')[0]}", color=self.theme_colors.text_color)
+                        ])
+                    )
+                    for bg_file in bg_files
+                ],
+                on_change=lambda e: self._handle_background_change(e.data),
+                select_icon=ft.Icons.CHECK,
+                select_icon_enabled_color=self.theme_colors.text_color,
+            ),
+        ], alignment=ft.MainAxisAlignment.START)
+
         return self.build_section(
             "主题设置",
             ft.Column([
                 theme_mode_row,
                 ft.Container(height=20),
                 theme_colors_row,
+                ft.Container(height=20),
+                background_row,
             ], spacing=0)
         )
 
@@ -236,6 +268,21 @@ class SettingsPage(BasePage):
             self.theme_colors.current_color = self.page.theme.color_scheme_seed
             theme_mode = self.config_manager.get("Theme", "mode", "dark")
             self.on_theme_changed(theme_mode)
+        self.page.update()
+
+    def _handle_background_change(self, background: str):
+        """处理背景图片变更"""
+        if not background:
+            return
+            
+        # 更新配置文件
+        if self.config_manager:
+            self.config_manager.set("Theme", "background_image", f"images/backgrounds/{background}")
+            
+        # 通知主题变化
+        if self.on_theme_changed:
+            self.app.config.background_image = f"images/backgrounds/{background}"
+            self.on_theme_changed(self.config_manager.get("Theme", "mode", "dark"))
         self.page.update()
 
     def _handle_window_size_change(self, e):

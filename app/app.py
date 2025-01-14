@@ -14,7 +14,7 @@ class AppConfig:
         self.window_height: int = 800
         self.window_min_width: int = 800
         self.window_min_height: int = 600
-        # 根据系统设置字体
+        self.background_image = "images/backgrounds/background1.jpg"
 
     @property
     def font_dict(self):
@@ -255,7 +255,7 @@ class App:
         self.page.padding = 0
 
     def build_windows_title_bar(self):
-        """创建标题栏"""
+        """创建windows标题栏"""
 
         def minimize(e):
             self.page.window.minimized = True
@@ -329,6 +329,7 @@ class App:
         layout = ft.Stack(
             controls=controls,
             expand=True,
+            opacity=0.9,
         )
 
         return layout
@@ -358,10 +359,12 @@ class App:
         # 创建主容器
         self.main_container = ft.Container(
             content=self._create_layout(),
-            bgcolor=self.theme_colors.bg_color,
+            # bgcolor=self.theme_colors.bg_color,
             border_radius=10,
             expand=True,
             data="window-resizable",
+            image_src=self.config.background_image,
+            image_fit=ft.ImageFit.FILL,
         )
 
         # 添加主容器到页面
@@ -410,8 +413,8 @@ class App:
             self.nav_rail.update_theme(self.theme_colors)
 
         # 更新 macOS 标题栏颜色
-        if self.page.platform.value == "macos":
-            self.page.window.title_bar_buttons_color = self.theme_colors.text_color
+        # if self.page.platform.value == "macos":
+        #     self.page.window.title_bar_buttons_color = self.theme_colors.text_color
 
         # 更新所有页面的主题
         for page in self.pages.values():
@@ -426,8 +429,9 @@ class App:
             self.content_area.bgcolor = self.theme_colors.bg_color
 
         # 更新主容器
-        self.main_container.bgcolor = self.theme_colors.bg_color
         self.main_container.content = self._create_layout()
+        self.main_container.image_src = self.config.background_image
+        self.main_container.image_fit = ft.ImageFit.FILL
         self.page.update()
 
     def register_settings_page(self, config_manager=None):

@@ -27,6 +27,7 @@ def main(page: ft.Page):
     config = AppConfig()
     config.app_title = config_manager.get("App", "title", "PyDracula")
     config.theme_mode = config_manager.get("Theme", "mode", "dark")
+    config.background_image = config_manager.get("Theme", "background_image", "images/backgrounds/background1.jpg")
     config.window_width = int(config_manager.get("Window", "width", "1300"))
     config.window_height = int(config_manager.get("Window", "height", "800"))
     config.window_min_width = int(config_manager.get("Window", "min_width", "800"))
