@@ -1,10 +1,10 @@
 import configparser
 import os
-import time
 
 class ConfigManager:
-    def __init__(self, config_file="app/config/config.ini"):
-        self.config_file = config_file
+    def __init__(self, config_file="app/config/config.ini", main_path=""):
+        self.config_file = os.path.join(main_path, config_file)
+        print(self.config_file)
         self.config = configparser.ConfigParser()
         self._ensure_config_file()
         self.load()

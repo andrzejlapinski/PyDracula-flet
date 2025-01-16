@@ -7,9 +7,14 @@ import asyncio
 import aiohttp
 import flet as ft
 from app.base_page import BasePage
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.app import App
 
 class MusicPlayer(BasePage):
-    def __init__(self, **kwargs):
+    def __init__(self, app, **kwargs):
+        self.app : "App" = app
         self.current_index = 0
         self.is_playing = False
         self.shuffle_mode = False
@@ -20,16 +25,12 @@ class MusicPlayer(BasePage):
         
         self.is_animating = False
         self.rotation_animation_task = None
-    
         
-        self.music_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "assets", "musics")
-        try:
-            self.music_files = sorted([f for f in os.listdir(self.music_dir) if f.endswith(".mp3")])
-        except FileNotFoundError:
-            self.music_files = []
-            print(f"Error: Music directory not found at {self.music_dir}")
+        self.music_dir = os.path.join(self.app.config.main_path, "assets", "musics")
+        self.playlists = self.get_all_playlists()
+        self.all_songs = self.get_all_songs()
+        self.current_playlist = "所有歌曲"  # Start with all songs
         
-        # 避免重复创建的控件应该放在 __init__ 中
         self.audio = ft.Audio(src=self.get_current_song(), on_position_changed=self.update_progress_ui, on_state_changed=self.update_play_state)
         
         super().__init__(title="音乐播放器", **kwargs)
@@ -37,26 +38,48 @@ class MusicPlayer(BasePage):
         self.page.overlay.append(self.audio)
         print("音乐播放器初始化完成")
 
+    def get_all_playlists(self):
+        playlists = {}
+        for root, dirs, files in os.walk(self.music_dir):
+            playlist_name = os.path.basename(root) if root != self.music_dir else "默认歌单"
+            playlist_files = sorted([os.path.join(root, f) for f in files if f.endswith(".mp3")], key=lambda f: f.lower())
+            
+            if playlist_files:
+                playlists[playlist_name] = playlist_files
+        return playlists
+
+    def get_all_songs(self):
+        all_songs = []
+        for playlist in self.playlists.values():
+            all_songs.extend(playlist)
+        return sorted(all_songs, key=lambda x: os.path.basename(x).lower())  # Sort by song name
+
     def format_song_name(self, filename):
-        
         name_without_extension = filename.rsplit('.', 1)[0]
         return name_without_extension.split('.', 1)[-1].strip()
 
     def update(self):
-        if self.music_files:
-            self.current_song_text.value = self.format_song_name(self.music_files[self.current_index])
-            self.album_cover.foreground_image_src = self.current_cover
+        if self.current_playlist == "所有歌曲":
+            current_song_path = self.all_songs[self.current_index]
+        else:
+            current_song_path = self.playlists[self.current_playlist][self.current_index]
+        
+        self.current_song_text.value = self.format_song_name(os.path.basename(current_song_path))
+        self.album_cover.foreground_image_src = self.current_cover
         self.page.update()
 
     def get_current_song(self):
-        if not self.music_files:
-            return "assets/musics"
-        return os.path.join(self.music_dir, self.music_files[self.current_index])
+        if self.current_playlist == "所有歌曲":
+            return self.all_songs[self.current_index]
+        return self.playlists[self.current_playlist][self.current_index]
 
     async def async_update_lyrics_and_cover(self):
-        if not self.music_files:
-            return
-        song_name = self.format_song_name(self.music_files[self.current_index])
+        if self.current_playlist == "所有歌曲":
+            song_path = self.all_songs[self.current_index]
+        else:
+            song_path = self.playlists[self.current_playlist][self.current_index]
+
+        song_name = self.format_song_name(os.path.basename(song_path))
         encoded_name = urllib.parse.quote(song_name)
         print(f"获取歌曲图片url: https://api.lrc.cx/cover?title={song_name}")
         print(f"获取歌词url: https://api.lrc.cx/lyrics?title={song_name}")
@@ -72,10 +95,10 @@ class MusicPlayer(BasePage):
             async with session.get(lyrics_url) as response:
                 lyrics_text = await response.text() if response.status == 200 else "歌词未找到"
                 self.current_lyrics = self.parse_lyrics(lyrics_text)
-                # 给歌词添加7个空行, 用于显示在屏幕中间
+                # Add 7 empty lines for centering
                 self.current_lyrics = [(0, "")]*7 + self.current_lyrics
         
-                # Update the lyrics display
+        # Update the lyrics display
         self.update_lyrics()
         # Now update the UI with the new data
         self.update()
@@ -93,7 +116,6 @@ class MusicPlayer(BasePage):
                     parsed_lyrics.append((start_time, text.strip()))
         
         return sorted(parsed_lyrics, key=lambda x: x[0])  # Sort by start time
-
 
     def update_lyrics(self):
         # Clear existing lyrics
@@ -137,10 +159,6 @@ class MusicPlayer(BasePage):
             self.album_cover.rotate = ft.transform.Rotate(self.album_cover_rotation_angle)
             self.page.update()
             await asyncio.sleep(0.016)  # Approximately 60 FPS
-        
-        # self.album_cover_rotation_angle = 0  # Reset rotation angle when animation stops
-        # self.album_cover.rotate = ft.transform.Rotate(0)  # Reset rotation to 0
-        # self.page.update()
 
     def stop_rotation(self):
         if self.is_animating:
@@ -163,21 +181,33 @@ class MusicPlayer(BasePage):
         self.page.update()
 
     def next_song(self, e):
-        if not self.music_files:
-            return
-        if self.shuffle_mode:
-            self.current_index = random.randint(0, len(self.music_files) - 1)
+        if self.current_playlist == "所有歌曲":
+            songs_list = self.all_songs
         else:
-            self.current_index = (self.current_index + 1) % len(self.music_files)
+            songs_list = self.playlists.get(self.current_playlist, [])
+        
+        if not songs_list:
+            return
+        
+        if self.shuffle_mode:
+            self.current_index = random.randint(0, len(songs_list) - 1)
+        else:
+            self.current_index = (self.current_index + 1) % len(songs_list)
         self.set_new_song()
 
     def previous_song(self, e):
-        if not self.music_files:
-            return
-        if self.shuffle_mode:
-            self.current_index = random.randint(0, len(self.music_files) - 1)
+        if self.current_playlist == "所有歌曲":
+            songs_list = self.all_songs
         else:
-            self.current_index = (self.current_index - 1) % len(self.music_files)
+            songs_list = self.playlists.get(self.current_playlist, [])
+        
+        if not songs_list:
+            return
+        
+        if self.shuffle_mode:
+            self.current_index = random.randint(0, len(songs_list) - 1)
+        else:
+            self.current_index = (self.current_index - 1) % len(songs_list)
         self.set_new_song()
 
     def set_new_song(self):
@@ -195,9 +225,36 @@ class MusicPlayer(BasePage):
         
         # Update UI to reflect the new song (even if lyrics and cover aren't loaded yet)
         self.update()
+    
+    def show_playlist(self, playlist_name):
+        self.current_playlist = playlist_name
+        
+        # Reset all playlist highlights
+        for tile in self.playlist_list.controls:
+            tile.title.color = None
+            tile.bgcolor = "transparent"
 
+        # Highlight the selected playlist
+        for tile in self.playlist_list.controls:
+            if tile.title.value == playlist_name:
+                tile.title.color = self.theme_colors.accent_color
+                tile.bgcolor = self.theme_colors.card_color
+                break
+
+        if playlist_name == "所有歌曲":
+            songs = self.all_songs
+        else:
+            songs = self.playlists.get(playlist_name, [])
+        
+        self.current_playlist_view.controls = [
+            ft.ListTile(
+                title=ft.Text(f"{i+1}. {self.format_song_name(os.path.basename(song))}"),
+                on_click=lambda e, song=song: self.select_song(e, song)
+            ) for i, song in enumerate(songs)
+        ]
+        self.page.update()
+        
     def build_content(self):
-
         self.album_cover_rotation_angle = 0
         self.album_cover = ft.CircleAvatar(
             foreground_image_src="images/default_cover.jpg",  # Default cover
@@ -209,7 +266,7 @@ class MusicPlayer(BasePage):
         )
 
         self.current_song_text = ft.Text(
-            self.format_song_name(self.music_files[self.current_index]) if self.music_files else "无可用歌曲",
+            self.format_song_name(os.path.basename(self.get_current_song())) if self.current_playlist in self.playlists or self.current_playlist == "所有歌曲" else "无可用歌曲",
             size=14,
             weight=ft.FontWeight.BOLD,
             width=200,
@@ -224,7 +281,6 @@ class MusicPlayer(BasePage):
             scroll=ft.ScrollMode.ALWAYS,
             alignment=ft.MainAxisAlignment.START,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            
         )
 
         self.progress = ft.Slider(
@@ -232,7 +288,7 @@ class MusicPlayer(BasePage):
             max=1,
             value=0,
             on_change=self.seek,
-            disabled=not self.music_files,
+            disabled=not self.all_songs,  # Disable if no songs available
             width=400
         )
 
@@ -258,7 +314,6 @@ class MusicPlayer(BasePage):
             on_click=self.toggle_shuffle,
             icon_size=24,
             tooltip="随机播放"
-            
         )
 
         repeat_button = ft.IconButton(
@@ -283,6 +338,28 @@ class MusicPlayer(BasePage):
             alignment=ft.MainAxisAlignment.CENTER,
             spacing=10
         )
+
+        # Create a ListView for playlists
+        self.playlist_list = ft.ListView(
+            controls=[
+                ft.ListTile(
+                    title=ft.Text(playlist_name, color=self.theme_colors.accent_color if playlist_name == self.current_playlist else None),
+                    bgcolor=self.theme_colors.card_color if playlist_name == self.current_playlist else "transparent",
+                    on_click=lambda e, playlist_name=playlist_name: self.show_playlist(playlist_name)
+                ) for playlist_name in ["所有歌曲"] + list(self.playlists.keys())
+            ],
+            expand=True,
+            width=150  # Adjust width as needed
+        )
+
+        # Placeholder for the current playlist's songs
+        self.current_playlist_view = ft.ListView(
+            controls=[],
+            expand=True,
+            width=250  # Adjust width as needed
+        )
+        
+        self.show_playlist("所有歌曲")
 
         player_bar = ft.Container(
             content=ft.Row(
@@ -326,7 +403,22 @@ class MusicPlayer(BasePage):
 
         playlist_with_lyrics = ft.Row(
             controls=[
-                self.build_playlist(),
+                ft.Column(
+                    controls=[
+                        ft.Text("播放列表", size=20, weight=ft.FontWeight.BOLD),
+                        ft.Row(
+                            controls=[
+                                ft.Container(
+                                    content=self.playlist_list,
+                                    padding=ft.padding.only(right=10),
+                                ),
+                                self.current_playlist_view
+                            ],
+                            expand=True
+                        ),
+                    ],
+                    expand=True
+                ),
                 # 竖向分割线
                 ft.VerticalDivider(1),
                 ft.Container(
@@ -344,13 +436,7 @@ class MusicPlayer(BasePage):
         return ft.Column(
             controls=[
                 ft.Container(
-                    content=ft.Column(
-                        controls=[
-                            ft.Text("播放列表", size=20, weight=ft.FontWeight.BOLD),
-                            playlist_with_lyrics
-                        ],
-                        spacing=10
-                    ),
+                    content=playlist_with_lyrics,
                     expand=True,
                     padding=20,
                     border_radius=ft.border_radius.all(10),
@@ -361,20 +447,50 @@ class MusicPlayer(BasePage):
             expand=True
         )
 
-    def build_playlist(self):
+    def build_playlist(self, playlist_name):
+        if playlist_name == "所有歌曲":
+            songs = self.all_songs
+        else:
+            songs = self.playlists.get(playlist_name, [])
+        
         return ft.ListView(
             controls=[
                 ft.ListTile(
-                    title=ft.Text(f"{i+1}. {self.format_song_name(song)}"),
-                    on_click=lambda e, idx=i: self.select_song(e, idx)
-                ) for i, song in enumerate(self.music_files)
+                    title=ft.Text(f"{i+1}. {self.format_song_name(os.path.basename(song))}"),
+                    on_click=lambda e, song=song, playlist_name=playlist_name: self.select_song(e, song, playlist_name)
+                ) for i, song in enumerate(songs)
             ],
             expand=True,
         )
 
-    def select_song(self, e, index):
-        self.current_index = index
+    # Update select_song to highlight the current song
+    def select_song(self, e, song_path):
+        # Check if the song is from "所有歌曲"
+        if self.current_playlist == "所有歌曲":
+            song_path = os.path.abspath(song_path)
+            all_songs_paths = [os.path.abspath(song) for song in self.all_songs]
+            if song_path in all_songs_paths:
+                self.current_index = all_songs_paths.index(song_path)
+        else:
+            playlist_paths = [os.path.abspath(song) for song in self.playlists[self.current_playlist]]
+            song_path = os.path.abspath(song_path)
+            if song_path in playlist_paths:
+                self.current_index = playlist_paths.index(song_path)
+        
         self.set_new_song()
+        
+        # Highlight the current song in the playlist view
+        for tile in self.current_playlist_view.controls:
+            tile.bgcolor = "transparent"
+            tile.title.color = None
+        
+        for tile in self.current_playlist_view.controls:
+            if tile.title.value.split('. ', 1)[1] == self.format_song_name(os.path.basename(self.get_current_song())):
+                tile.bgcolor = self.theme_colors.card_color
+                tile.title.color = self.theme_colors.accent_color
+                break
+
+        self.page.update()
 
     def seek(self, e):
         if self.audio.src and self.audio.get_duration() > 0:
@@ -425,3 +541,8 @@ class MusicPlayer(BasePage):
         self.repeat_mode = not self.repeat_mode
         e.control.icon = ft.Icons.REPEAT if not self.repeat_mode else ft.Icons.REPEAT_ON
         self.page.update()
+
+    def switch_playlist(self, e):
+        self.current_playlist = e.control.value
+        self.current_index = 0  # Reset to the first song when switching playlists
+        self.update()

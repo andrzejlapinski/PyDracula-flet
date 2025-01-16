@@ -4,11 +4,12 @@ from app.base_page import BasePage
 from app.config.version import VERSION, APP_DESCRIPTION, GITHUB_URL
 import requests
 import asyncio
+from app.config.config_manager import ConfigManager
 
 class SettingsPage(BasePage):
-    def __init__(self, config_manager=None, **kwargs):
+    def __init__(self, **kwargs):
+        self.config_manager = ConfigManager()
         super().__init__(title="设置", **kwargs)
-        self.config_manager = config_manager
         self.proxy_test_text = None
         self.proxy_url = None
         self.proxy_controls = None

@@ -1,3 +1,4 @@
+import os
 import flet as ft
 from app.app import App, AppConfig
 from app.pages.calc import CalcPage
@@ -14,6 +15,7 @@ from app.pages.todo import TodoPage
 def main(page: ft.Page):
     # 设置资源目录
     page.assets_dir = "assets"
+    main_path = os.path.dirname(os.path.abspath(__file__))
     
     # 设置语言
     page.locale_configuration = ft.LocaleConfiguration(
@@ -22,7 +24,7 @@ def main(page: ft.Page):
     )
     
     # 创建配置管理器
-    config_manager = ConfigManager()
+    config_manager = ConfigManager(main_path=main_path)
     
     # 创建应用配置
     config = AppConfig()
@@ -33,6 +35,9 @@ def main(page: ft.Page):
     config.window_height = int(config_manager.get("Window", "height", "800"))
     config.window_min_width = int(config_manager.get("Window", "min_width", "800"))
     config.window_min_height = int(config_manager.get("Window", "min_height", "600"))
+    
+    config.main_path= main_path
+
     
     # 设置字体和主题色
     font_family = config.font_dict.get(page.platform.value, ["Roboto"])[0]
@@ -61,7 +66,7 @@ def main(page: ft.Page):
     
     # 注册页面
     app.register_pages(pages)
-    app.register_settings_page(config_manager)
+    app.register_settings_page()
     app.init_page(page)
 
 if __name__ == "__main__":

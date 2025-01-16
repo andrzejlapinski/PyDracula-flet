@@ -5,9 +5,9 @@ from .theme import ThemeColors
 if TYPE_CHECKING:
     from .base_page import BasePage
 
-
 class AppConfig:
     def __init__(self):
+        
         self.app_title: str = "PyDracula"
         self.theme_mode: str = "dark"
         self.window_width: int = 1300
@@ -15,10 +15,9 @@ class AppConfig:
         self.window_min_width: int = 800
         self.window_min_height: int = 600
         self.background_image = "images/backgrounds/background1.jpg"
-
-    @property
-    def font_dict(self):
-        return {
+        self.main_path = ""
+        
+        self.font_dict = {
             "windows": [
                 "Segoe UI",
                 "Microsoft YaHei UI",
@@ -36,6 +35,34 @@ class AppConfig:
                 "DejaVu Sans",
             ],
         }
+        
+    def get(self, key, default=None):
+        """
+        获取属性值，如果属性不存在则返回默认值。
+        
+        :param key: 属性名
+        :param default: 默认值
+        :return: 属性值或默认值
+        """
+        return getattr(self, key, default)
+
+    def set(self, key, value):
+        """
+        设置属性值。如果属性不存在，则动态添加。
+        
+        :param key: 属性名
+        :param value: 属性值
+        """
+        setattr(self, key, value)
+
+    def __setattr__(self, key, value):
+        """
+        动态设置属性值，同时允许通过实例直接设置新的属性。
+        
+        :param key: 属性名
+        :param value: 属性值
+        """
+        self.__dict__[key] = value
 
 
 class NavRail:
@@ -434,16 +461,15 @@ class App:
         self.main_container.image.fit = ft.ImageFit.FILL
         self.page.update()
 
-    def register_settings_page(self, config_manager=None):
+    def register_settings_page(self):
         """
         注册设置页面
         :param config_manager: 配置管理器实例
         """
         from app.pages.settings import SettingsPage
 
-        self.config_manager = config_manager
         # 注册设置页面
-        self._register_page(nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "name": "设置", "is_bottom": True}, page=SettingsPage(theme_colors=self.theme_colors, theme_mode=self.config.theme_mode, on_theme_changed=self._update_theme, config_manager=config_manager, page=self.page, app=self))
+        self._register_page(nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "name": "设置", "is_bottom": True}, page=SettingsPage(theme_colors=self.theme_colors, theme_mode=self.config.theme_mode, on_theme_changed=self._update_theme, page=self.page, app=self))
 
     def register_pages(self, pages: List[Dict]):
         """
