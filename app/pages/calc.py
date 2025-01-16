@@ -15,22 +15,22 @@ class CalcButton(ft.ElevatedButton):
 class DigitButton(CalcButton):
     def __init__(self, text, button_clicked, expand=1):
         CalcButton.__init__(self, text, button_clicked, expand)
-        self.bgcolor = ft.colors.WHITE24
-        self.color = ft.colors.WHITE
+        self.bgcolor = ft.Colors.WHITE24
+        self.color = ft.Colors.WHITE
 
 
 class ActionButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
-        self.bgcolor = ft.colors.ORANGE
-        self.color = ft.colors.WHITE
+        self.bgcolor = ft.Colors.ORANGE
+        self.color = ft.Colors.WHITE
 
 
 class ExtraActionButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
-        self.bgcolor = ft.colors.BLUE_GREY_100
-        self.color = ft.colors.BLACK
+        self.bgcolor = ft.Colors.BLUE_GREY_100
+        self.color = ft.Colors.BLACK
 
 
 class CalculatorApp(ft.Container):
@@ -38,13 +38,13 @@ class CalculatorApp(ft.Container):
         super().__init__()
 
         # 用于显示完整计算过程和结果
-        self.formula = ft.Text(value="", color=ft.colors.WHITE, size=16)  # 公式显示
-        self.result = ft.Text(value="0", color=ft.colors.WHITE, size=24)  # 结果显示
+        self.formula = ft.Text(value="", color=ft.Colors.WHITE, size=16)  # 公式显示
+        self.result = ft.Text(value="0", color=ft.Colors.WHITE, size=24)  # 结果显示
         
         self.reset()
 
         self.width = 500
-        self.bgcolor = ft.colors.BLACK
+        self.bgcolor = ft.Colors.BLACK
         self.border_radius = ft.border_radius.all(20)
         self.padding = 20
         self.content = ft.Column(

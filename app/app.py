@@ -115,7 +115,7 @@ class NavRail:
             icon=icon,
             icon_color=self.theme_colors.accent_color if active else self.theme_colors.text_color,
             style=ft.ButtonStyle(
-                bgcolor=ft.colors.TRANSPARENT,
+                bgcolor=ft.Colors.TRANSPARENT,
                 shape=ft.RoundedRectangleBorder(radius=8),
             ),
             on_click=lambda e: self._handle_click(name) if on_click is None else on_click(e),
@@ -160,7 +160,7 @@ class NavRail:
         user_image = ft.Stack(
             [
                 ft.CircleAvatar(
-                    foreground_image_url="images/user.jpeg",
+                    foreground_image_src="images/user.jpeg",
                     content=ft.Text("User"),
                 ),
                 ft.Container(
@@ -363,8 +363,8 @@ class App:
             border_radius=10,
             expand=True,
             data="window-resizable",
-            image_src=self.config.background_image,
-            image_fit=ft.ImageFit.FILL,
+            image=ft.DecorationImage(src=self.config.background_image, fit=ft.ImageFit.FILL),
+            # image_fit=ft.ImageFit.FILL,
         )
 
         # 添加主容器到页面
@@ -430,8 +430,8 @@ class App:
 
         # 更新主容器
         self.main_container.content = self._create_layout()
-        self.main_container.image_src = self.config.background_image
-        self.main_container.image_fit = ft.ImageFit.FILL
+        self.main_container.image.src = self.config.background_image
+        self.main_container.image.fit = ft.ImageFit.FILL
         self.page.update()
 
     def register_settings_page(self, config_manager=None):

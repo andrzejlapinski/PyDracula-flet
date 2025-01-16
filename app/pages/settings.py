@@ -7,12 +7,12 @@ import asyncio
 
 class SettingsPage(BasePage):
     def __init__(self, config_manager=None, **kwargs):
+        super().__init__(title="设置", **kwargs)
         self.config_manager = config_manager
         self.proxy_test_text = None
         self.proxy_url = None
         self.proxy_controls = None
         self.proxy_switch = None
-        super().__init__(title="设置", **kwargs)
 
     def _build_theme_settings(self) -> ft.Container:
         """构建主题设置部分"""
@@ -151,8 +151,8 @@ class SettingsPage(BasePage):
         ], spacing=10, expand=True)
 
         return self.build_section(
-            "代理设置",
-            ft.Column([
+            title="代理设置",
+            content=ft.Column([
                 self.proxy_switch,
                 self.proxy_controls,
             ], spacing=20, expand=True),

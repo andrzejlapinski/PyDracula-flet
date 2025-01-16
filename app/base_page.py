@@ -158,7 +158,11 @@ class BasePage(ABC):
 
     @abstractmethod
     def build_content(self) -> ft.Column:
-        """子类实现此方法来构建页面主要内容"""
+        """
+        子类实现此方法来构建页面主要内容
+        
+        避免重复创建的控件应该放在 __init__ 中
+        """
         pass
 
     def build(self) -> ft.Container:
@@ -181,14 +185,17 @@ class BasePage(ABC):
         )
         return container
 
-    def build_section(self, title: str = None, content: ft.Control = None, expand=None) -> ft.Container:
+    def build_section(self, title: str = None, content: ft.Control = None, expand=None, **kwargs) -> ft.Container:
         """构建一个带标题的部分"""
         controls = []
+        container_control = []
 
         if title:
-            title_text = ft.Text(title, size=22, weight="bold",
-                            color=self.theme_colors.text_color)
-            controls.append(title_text)
+            title_text = ft.Container(
+                content=ft.Text(title, size=22, weight="bold",color=self.theme_colors.text_color),
+                padding=ft.padding.only(left=30),
+                )
+            container_control.append(title_text)
 
         if content:
             if not isinstance(content, ft.Container):
@@ -202,16 +209,24 @@ class BasePage(ABC):
             controls=controls,
             spacing=10,
         )
+        
+        container_control.append(ft.Container(
+                    content=section_content,
+                    bgcolor=self.theme_colors.card_color,
+                    padding=20 if title else 10,
+                    border_radius=ft.border_radius.all(10),
+                    border=ft.border.all(1, self.theme_colors.divider_color),
+                    margin=ft.padding.symmetric(horizontal=10, vertical=5),
+                    expand=expand,
+                    **kwargs
+                ))
 
-        container = ft.Container(
-            content=section_content,
-            bgcolor=self.theme_colors.card_color,
-            padding=20 if title else 10,
-            border_radius=ft.border_radius.all(10),
-            border=ft.border.all(1, self.theme_colors.divider_color),
-            margin=ft.padding.symmetric(horizontal=10, vertical=5),
-            expand=expand,
+        container = ft.Column(
+            controls=container_control,
+            spacing=0,
+            scroll="none",
         )
+        
 
         return container
 

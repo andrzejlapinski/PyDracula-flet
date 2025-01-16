@@ -60,10 +60,10 @@ class SubNavRail:
             if isinstance(button.content, ft.Row):
                 icon = button.content.controls[0]
                 text = button.content.controls[1]
-                icon.color = self.theme_colors.accent_color if is_current else ft.colors.with_opacity(0.7, self.theme_colors.text_color)
-                text.color = self.theme_colors.accent_color if is_current else ft.colors.with_opacity(0.7, self.theme_colors.text_color)
+                icon.color = self.theme_colors.accent_color if is_current else ft.Colors.with_opacity(0.7, self.theme_colors.text_color)
+                text.color = self.theme_colors.accent_color if is_current else ft.Colors.with_opacity(0.7, self.theme_colors.text_color)
             # 更新背景色
-            button.bgcolor = ft.colors.with_opacity(0.1, self.theme_colors.sub_nav_color) if is_current else None
+            button.bgcolor = ft.Colors.with_opacity(0.1, self.theme_colors.sub_nav_color) if is_current else None
             button.update()
             
         # 更新当前页面
@@ -92,11 +92,11 @@ class SubNavRail:
                     ft.Icon(
                         icon,
                         size=26,
-                        color=self.theme_colors.accent_color if active else ft.colors.with_opacity(0.7, self.theme_colors.text_color),
+                        color=self.theme_colors.accent_color if active else ft.Colors.with_opacity(0.7, self.theme_colors.text_color),
                     ),
                     ft.Text(
                         name,
-                        color=self.theme_colors.accent_color if active else ft.colors.with_opacity(0.7, self.theme_colors.text_color),
+                        color=self.theme_colors.accent_color if active else ft.Colors.with_opacity(0.7, self.theme_colors.text_color),
                         size=13,
                         weight=ft.FontWeight.W_500,
                     ),
@@ -106,7 +106,7 @@ class SubNavRail:
             ),
             padding=ft.padding.only(left=12, top=8, bottom=8, right=12),
             border_radius=ft.border_radius.all(6),
-            bgcolor=ft.colors.with_opacity(0.1, self.theme_colors.sub_nav_color) if active else None,
+            bgcolor=ft.Colors.with_opacity(0.1, self.theme_colors.sub_nav_color) if active else None,
             ink=True,  # 添加水波纹效果
             on_hover=lambda e: self._handle_hover(e, name),  # 添加悬停效果
             on_click=lambda e: self._handle_click(name) if on_click is None else on_click(e),
@@ -124,7 +124,7 @@ class SubNavRail:
         """处理按钮悬停事件"""
         # 如果不是当前选中的按钮，才改变背景色
         if name != self.current_page:
-            e.control.bgcolor = ft.colors.with_opacity(0.05, self.theme_colors.sub_nav_color) if e.data == "true" else None
+            e.control.bgcolor = ft.Colors.with_opacity(0.05, self.theme_colors.sub_nav_color) if e.data == "true" else None
             e.control.update()
 
     def _handle_click(self, name):
@@ -165,7 +165,7 @@ class SubNavRail:
                 spacing=2,
                 scroll=ft.ScrollMode.ADAPTIVE,
             ),
-            bgcolor=ft.colors.with_opacity(0.95, self.theme_colors.sub_nav_color),
+            bgcolor=ft.Colors.with_opacity(0.95, self.theme_colors.sub_nav_color),
             padding=ft.padding.only(top=8),
             width=150,
             left=0,

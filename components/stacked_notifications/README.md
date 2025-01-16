@@ -69,7 +69,7 @@ from notification_manager import NotificationStyle
 custom_type = notifications.add_custom_style(
     "CUSTOM",
     NotificationStyle(
-        bgcolor=ft.colors.PURPLE,
+        bgcolor=ft.Colors.PURPLE,
         icon=ft.icons.STAR,
     )
 )
