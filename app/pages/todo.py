@@ -1,6 +1,6 @@
 import flet as ft
 
-from app.base_page import BasePage
+from app.base import BasePage
 
 class Task(ft.Column):
     def __init__(self, task_name, task_status_change, task_delete):

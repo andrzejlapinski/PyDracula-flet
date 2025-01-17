@@ -1,68 +1,132 @@
+import os
+import json
 import flet as ft
 from typing import Callable, Dict, List, TYPE_CHECKING
-from .theme import ThemeColors
+from collections import UserDict
+
+from .config.theme import ThemeColors
 
 if TYPE_CHECKING:
-    from .base_page import BasePage
+    from .base import BasePage
 
-class AppConfig:
-    def __init__(self):
-        
-        self.app_title: str = "PyDracula"
-        self.theme_mode: str = "dark"
-        self.window_width: int = 1300
-        self.window_height: int = 800
-        self.window_min_width: int = 800
-        self.window_min_height: int = 600
-        self.background_image = "images/backgrounds/background1.jpg"
-        self.main_path = ""
-        
-        self.font_dict = {
-            "windows": [
-                "Segoe UI",
-                "Microsoft YaHei UI",
-                "Arial",
-            ],
-            "macos": [
-                "SF Pro",
-                "Helvetica Neue",
-                "PingFang SC",
-                "Hiragino Sans GB",
-            ],
-            "linux": [
-                "Ubuntu",
-                "Noto Sans CJK SC",
-                "DejaVu Sans",
-            ],
+class AppConfig(UserDict):
+    _instance = None
+    
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def __init__(self, main_path=""):
+        if hasattr(self.__dict__, "_initialized"):  # Check if already initialized
+            return
+        self._initialized = True
+        self.main_path = main_path
+        self.config_file = os.path.join(main_path, "app/config/config.json")
+        self.data = {}  # Initialize data
+        self._ensure_config_file()
+        self.load_config()
+        print("加载配置管理器成功")
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
+    def _ensure_config_file(self):
+        """Ensures the config file and directories exist."""
+        os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
+        if not os.path.exists(self.config_file):
+            self._create_default_config()
+
+    def _create_default_config(self):
+        """Creates a default configuration."""
+        self.data = {
+            "Theme": {"mode": "dark", "color": "ft.Colors.BLUE", "background_image": "images/backgrounds/background1.jpg"},
+            "Window": {
+                "width": 1300,
+                "height": 800,
+                "min_width": 500,
+                "min_height": 400,
+                "font": {
+                    "windows": [
+                        "Segoe UI",
+                        "Microsoft YaHei UI",
+                        "Arial",
+                    ],
+                    "macos": [
+                        "SF Pro",
+                        "Helvetica Neue",
+                        "PingFang SC",
+                        "Hiragino Sans GB",
+                    ],
+                    "linux": [
+                        "Ubuntu",
+                        "Noto Sans CJK SC",
+                        "DejaVu Sans",
+                    ],
+                },
+            },
+            "App": {"title": "PyDracula"}
         }
-        
-    def get(self, key, default=None):
-        """
-        获取属性值，如果属性不存在则返回默认值。
-        
-        :param key: 属性名
-        :param default: 默认值
-        :return: 属性值或默认值
-        """
-        return getattr(self, key, default)
+        self.save_config()
 
-    def set(self, key, value):
-        """
-        设置属性值。如果属性不存在，则动态添加。
-        
-        :param key: 属性名
-        :param value: 属性值
-        """
-        setattr(self, key, value)
+    def load_config(self):
+        """Loads the configuration from the file."""
+        try:
+            with open(self.config_file, 'r', encoding='utf-8') as f:
+                self.data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            self._create_default_config()
+
+    def save_config(self):
+        """Saves the current configuration to the file."""
+        with open(self.config_file, 'w', encoding='utf-8') as f:
+            json.dump(self.data, f, indent=4, ensure_ascii=False)
+
+    def get(self, section, key, default=None):
+        """Retrieves a configuration value."""
+        return self.data.get(section, {}).get(key, default)
+
+    def set(self, section, key, value):
+        """Sets a configuration value and saves it."""
+        if section not in self.data:
+            self.data[section] = {}
+        self.data[section][key] = value
+        self.save_config()
+
+    def __getattr__(self, item):
+        """Dynamic attribute access from the config data."""
+        if item in self.__dict__:  # Check if it's an instance attribute first
+            return self.__dict__[item]
+        for section, settings in self.data.items():
+            if item in settings:
+                return settings[item]
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
 
     def __setattr__(self, key, value):
-        """
-        动态设置属性值，同时允许通过实例直接设置新的属性。
-        
-        :param key: 属性名
-        :param value: 属性值
-        """
-        self.__dict__[key] = value
+        """Dynamic attribute setting and updating config."""
+        if key in ['data', '_initialized', 'config_file', 'main_path']:  # Exempt internal attributes
+            super().__setattr__(key, value)
+        else:
+            self.set("App", key, value)
+
+    def add_section(self, section):
+        """Adds a new section to the config if it doesn't exist."""
+        if section not in self.data:
+            self.data[section] = {}
+            self.save_config()
+
+    def remove_section(self, section):
+        """Removes a section from the config if it exists."""
+        if section in self.data:
+            del self.data[section]
+            self.save_config()
+
+    def config_sections(self):
+        """Returns a list of all section names in the config."""
+        return list(self.data.keys())
 
 
 class NavRail:
@@ -117,7 +181,7 @@ class NavRail:
 
         for btn_name, button in self.buttons.items():
             button.icon_color = self.theme_colors.accent_color if btn_name == name else self.theme_colors.text_color
-            
+
         # 更新当前页面
         self.current_page = name
 
@@ -146,7 +210,7 @@ class NavRail:
                 shape=ft.RoundedRectangleBorder(radius=8),
             ),
             on_click=lambda e: self._handle_click(name) if on_click is None else on_click(e),
-            hover_color = self.theme_colors.nav_color,
+            hover_color=self.theme_colors.nav_color,
             mouse_cursor=ft.MouseCursor.BASIC,
         )
         self.buttons[name] = button
@@ -234,12 +298,11 @@ class App:
         self.page = page
 
         # 初始化时设置一个默认的主题颜色，后续会在init_page中更新
-        self.theme_colors = ThemeColors(is_dark=self.config.theme_mode != "light")
+        self.theme_colors = ThemeColors(is_dark=self.config.get("Theme", "mode") != "light")
         self.content_area = None
         self.nav_rail = None
         self.pages: Dict[int, "BasePage"] = {}
         self.main_container = None
-        self.config_manager = None
 
         # 创建导航栏
         self.nav_rail = NavRail(
@@ -251,10 +314,10 @@ class App:
     def _init_window(self):
         """初始化窗口设置"""
         # 设置窗口属性
-        self.page.window.width = self.config.window_width
-        self.page.window.height = self.config.window_height
-        self.page.window.min_width = self.config.window_min_width
-        self.page.window.min_height = self.config.window_min_height
+        self.page.window.width = self.config.get("Window", "width")
+        self.page.window.height = self.config.get("Window", "height")
+        self.page.window.min_width = self.config.get("Window", "min_width")
+        self.page.window.min_height = self.config.get("Window", "min_height")
 
         # 隐藏标题栏
         self.page.window.title_bar_hidden = True
@@ -270,11 +333,11 @@ class App:
     def _init_theme(self):
         """初始化主题设置"""
         # 根据配置设置主题模式
-        if self.config.theme_mode == "system":
+        if self.config.get("Theme", "mode") == "system":
             is_dark = self.page.platform_brightness == "dark"
             self.page.theme_mode = ft.ThemeMode.DARK if is_dark else ft.ThemeMode.LIGHT
         else:
-            is_dark = self.config.theme_mode == "dark"
+            is_dark = self.config.get("Theme", "mode") == "dark"
             self.page.theme_mode = ft.ThemeMode.DARK if is_dark else ft.ThemeMode.LIGHT
 
         # 更新主题颜色
@@ -363,6 +426,7 @@ class App:
 
     def _handle_page_change(self, page: "BasePage" = None):
         """处理页面切换"""
+        self.current_page = page
         self.content_area.content = page.content
         self.page.update()
 
@@ -390,7 +454,7 @@ class App:
             border_radius=10,
             expand=True,
             data="window-resizable",
-            image=ft.DecorationImage(src=self.config.background_image, fit=ft.ImageFit.FILL),
+            image=ft.DecorationImage(src=self.config.get("Theme", "background_image"), fit=ft.ImageFit.FILL),
             # image_fit=ft.ImageFit.FILL,
         )
 
@@ -398,7 +462,7 @@ class App:
         self.page.add(self.main_container)
 
         # 更新所有组件的主题配色
-        self._update_theme(self.config.theme_mode)
+        self._update_theme(self.config.get("Theme", "mode"))
 
         # 显示第一个页面
         self.nav_rail.show_first_page()
@@ -421,7 +485,7 @@ class App:
 
     def _update_theme(self, theme_mode: str):
         """更新主题"""
-        self.config.theme_mode = theme_mode
+        self.config.set("Theme", "mode", theme_mode)
 
         # 更新主题模式
         if theme_mode == "system":
@@ -457,7 +521,7 @@ class App:
 
         # 更新主容器
         self.main_container.content = self._create_layout()
-        self.main_container.image.src = self.config.background_image
+        self.main_container.image.src = self.config.get("Theme", "background_image")
         self.main_container.image.fit = ft.ImageFit.FILL
         self.page.update()
 
@@ -469,7 +533,7 @@ class App:
         from app.pages.settings import SettingsPage
 
         # 注册设置页面
-        self._register_page(nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "name": "设置", "is_bottom": True}, page=SettingsPage(theme_colors=self.theme_colors, theme_mode=self.config.theme_mode, on_theme_changed=self._update_theme, page=self.page, app=self))
+        self._register_page(nav_item={"icon": ft.Icons.SETTINGS_ROUNDED, "name": "设置", "is_bottom": True}, page=SettingsPage(theme_colors=self.theme_colors, theme_mode=self.config.get("Theme", "mode"), on_theme_changed=self._update_theme, page=self.page, app=self, config_manager=self.config))
 
     def register_pages(self, pages: List[Dict]):
         """
@@ -478,7 +542,7 @@ class App:
         """
         # 注册页面
         for page_info in pages:
-            self._register_page(nav_item={"icon": page_info["icon"], "name": page_info["name"], "is_bottom": page_info.get("is_bottom", False)}, page=page_info["page_class"](theme_colors=self.theme_colors, theme_mode=self.config.theme_mode, page=self.page, app=self))
+            self._register_page(nav_item={"icon": page_info["icon"], "name": page_info["name"], "is_bottom": page_info.get("is_bottom", False)}, page=page_info["page_class"](theme_colors=self.theme_colors, theme_mode=self.config.get("Theme", "mode"), page=self.page, app=self))
 
     def switch_page(self, page_name: str) -> bool:
         """

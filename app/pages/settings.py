@@ -1,14 +1,18 @@
 import flet as ft
 import os
-from app.base_page import BasePage
+from app.base import BasePage
 from app.config.version import VERSION, APP_DESCRIPTION, GITHUB_URL
 import requests
 import asyncio
-from app.config.config_manager import ConfigManager
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.app import AppConfig
 
 class SettingsPage(BasePage):
-    def __init__(self, **kwargs):
-        self.config_manager = ConfigManager()
+    def __init__(self, config_manager, **kwargs):
+        self.config_manager: AppConfig = config_manager
         super().__init__(title="设置", **kwargs)
         self.proxy_test_text = None
         self.proxy_url = None
@@ -123,7 +127,7 @@ class SettingsPage(BasePage):
         # 代理开关
         self.proxy_switch = ft.Switch(
             label="启用代理",
-            value=self.config_manager.get("Proxy", "enabled", "false").lower() == "true",
+            value=self.config_manager.get("Proxy", "enabled", False),
             on_change=lambda e: self._handle_proxy_change(e),
         )
 
@@ -146,17 +150,14 @@ class SettingsPage(BasePage):
         # 创建一个容器来包含代理URL输入框、测试按钮和结果文本
         self.proxy_controls = ft.Column([
             ft.Row(
-                [self.proxy_url, test_button, self.proxy_test_text],
+                [self.proxy_switch,self.proxy_url, test_button, self.proxy_test_text],
                 spacing=20,
             ),
         ], spacing=10, expand=True)
 
         return self.build_section(
             title="代理设置",
-            content=ft.Column([
-                self.proxy_switch,
-                self.proxy_controls,
-            ], spacing=20, expand=True),
+            content=self.proxy_controls,
             expand=True
         )
 
@@ -166,32 +167,29 @@ class SettingsPage(BasePage):
         default_size = ft.Row([
             ft.TextField(
                 label="默认宽度",
-                value=self.config_manager.get("Window", "width", "1300"),
+                value=self.config_manager.get("Window", "width", 1300),
                 width=150,
                 data="width",
                 on_change=lambda e: self._handle_window_size_change(e),
             ),
             ft.TextField(
                 label="默认高度",
-                value=self.config_manager.get("Window", "height", "800"),
+                value=self.config_manager.get("Window", "height", 800),
                 width=150,
                 data="height",
                 on_change=lambda e: self._handle_window_size_change(e),
             ),
-        ], spacing=20)
-
-        # 最小尺寸设置
-        min_size = ft.Row([
+            ft.Container(width=100),
             ft.TextField(
                 label="最小宽度",
-                value=self.config_manager.get("Window", "min_width", "500"),
+                value=self.config_manager.get("Window", "min_width", 500),
                 width=150,
                 data="min_width",
                 on_change=lambda e: self._handle_window_size_change(e),
             ),
             ft.TextField(
                 label="最小高度",
-                value=self.config_manager.get("Window", "min_height", "400"),
+                value=self.config_manager.get("Window", "min_height", 400),
                 width=150,
                 data="min_height",
                 on_change=lambda e: self._handle_window_size_change(e),
@@ -200,7 +198,7 @@ class SettingsPage(BasePage):
 
         return self.build_section(
             "窗口设置",
-            ft.Column([default_size, min_size], spacing=20)
+            ft.Column([default_size], spacing=20)
         )
 
     def _build_about_section(self) -> ft.Container:
@@ -282,7 +280,7 @@ class SettingsPage(BasePage):
             
         # 通知主题变化
         if self.on_theme_changed:
-            self.app.config.background_image = f"images/backgrounds/{background}"
+            self.app.config.set("Theme", "background_image", f"images/backgrounds/{background}")
             self.on_theme_changed(self.config_manager.get("Theme", "mode", "dark"))
         self.page.update()
 

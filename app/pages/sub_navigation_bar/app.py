@@ -1,5 +1,5 @@
 import flet as ft
-from app.base_page import BasePage
+from app.base import BasePage
 from app.app import ThemeColors
 from typing import Callable
 from . import FloatingPage, TimePickerPage, ChartPage, ButtonsPage

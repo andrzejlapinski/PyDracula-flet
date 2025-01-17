@@ -1,7 +1,7 @@
 import flet as ft
 from components.fletcarousel.horizontal import BasicHorizontalCarousel
 from components.fletcarousel.attributes import AutoCycle
-from app.base_page import BasePage
+from app.base import BasePage
 import asyncio
 import time
 

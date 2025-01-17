@@ -215,18 +215,6 @@ The application supports dark and light theme switching with automatic preferenc
 2. Configuration file preset
 3. Automatic loading of last theme setting on startup
 
-## Configuration Management
-
-Use the `ConfigManager` class for configuration:
-
-```python
-from core.config_manager import ConfigManager
-
-config_manager = ConfigManager()
-value = config_manager.get("Section", "key", "default_value")
-config_manager.set("Section", "key", "new_value")
-```
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. 

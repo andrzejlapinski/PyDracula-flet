@@ -1,7 +1,7 @@
 import flet as ft
 from components.fletcarousel.horizontal import BasicHorizontalCarousel, BasicAnimatedHorizontalCarousel
 from components.fletcarousel.attributes import AutoCycle, HintLine
-from app.base_page import BasePage
+from app.base import BasePage
 
 class CarouselPage(BasePage):
     def __init__(self, **kwargs):

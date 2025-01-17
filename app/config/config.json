@@ -1,0 +1,34 @@
+{
+    "Theme": {
+        "mode": "light",
+        "color": "#6E9ECF",
+        "background_image": "images/backgrounds/background2.jpg"
+    },
+    "Window": {
+        "width": 1300,
+        "height": 800,
+        "min_width": 500,
+        "min_height": 400,
+        "font": {
+            "windows": [
+                "Segoe UI",
+                "Microsoft YaHei UI",
+                "Arial"
+            ],
+            "macos": [
+                "SF Pro",
+                "Helvetica Neue",
+                "PingFang SC",
+                "Hiragino Sans GB"
+            ],
+            "linux": [
+                "Ubuntu",
+                "Noto Sans CJK SC",
+                "DejaVu Sans"
+            ]
+        }
+    },
+    "App": {
+        "title": "PyDracula"
+    }
+}

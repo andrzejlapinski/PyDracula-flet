@@ -4,13 +4,10 @@
 
 PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应用程序模版。它提供了一套完整的主题系统、导航系统和配置管理, flet template。
 
-[PyDracula](https://github.com/Wanderson-Magalhaes/Modern_GUI_PyDracula_PySide6_or_PyQt6) 是一个基于 PyQt5 构建的现代化桌面应用程序模版。
-
-
 ## 注意事项
 1. 项目主要在macos开发，windows可能存在一些问题，我会在windows上测试，如果存在问题，我会及时修复。
 
-2. 主题配色，我在macos上测试，windows 的颜色和对比度差异可能比较大，您可以在 `app/theme.py` 中修改颜色，以适应您的windows系统。
+2. 主题配色，我在macos上测试，windows 的颜色和对比度差异可能比较大，您可以在 `app/config/theme.py` 中修改颜色，以适应您的windows系统。
 
 ## 特性
 
@@ -39,6 +36,7 @@ PyDracula-flet 是一个基于 Flet 参考 PyDracula 构建的现代化桌面应
 
 ```bash
 git clone https://github.com/clarencejh/PyDracula-flet.git
+cd PyDracula-flet
 ```
 
 2. 安装依赖：
@@ -85,7 +83,7 @@ PyDracula-flet/
 
 ```python
 from flet import Column, Container, Text, padding, border_radius
-from core.base_page import BasePage
+from core.base import BasePage
 
 class MyPage(BasePage):
     def __init__(self, **kwargs):
@@ -143,20 +141,6 @@ def main(page: ft.Page):
 2. 在 `build_content` 中组织这些区块
 3. 使用 `scroll="auto"` 支持内容滚动
 4. 保持合适的间距 (`spacing`)
-
-### 配置管理
-
-如果页面需要保存配置，可以通过 `config_manager` 实现：
-
-```python
-def __init__(self, config_manager=None, **kwargs):
-    self.config_manager = config_manager
-    super().__init__(**kwargs)
-
-def save_setting(self, section: str, key: str, value: str):
-    if self.config_manager:
-        self.config_manager.set(section, key, value)
-```
 
 ### 通用方法
 
@@ -216,18 +200,6 @@ def build_content(self) -> Column:
 3. 程序启动时自动加载上次的主题设置
 
 
-## 配置管理
-
-使用 `ConfigManager` 类管理配置：
-
-```python
-from core.config_manager import ConfigManager
-
-config_manager = ConfigManager()
-value = config_manager.get("Section", "key", "default_value")
-config_manager.set("Section", "key", "new_value")
-```
-
 ## 开发指南
 
 ### 添加新页面
@@ -241,7 +213,7 @@ config_manager.set("Section", "key", "new_value")
 示例：
 
 ```python
-from core.base_page import BasePage
+from core.base import BasePage
 from flet import Column, Container, Text
 
 class MyPage(BasePage):

@@ -6,7 +6,7 @@ import urllib.parse
 import asyncio
 import aiohttp
 import flet as ft
-from app.base_page import BasePage
+from app.base import BasePage
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 class MusicPlayer(BasePage):
     def __init__(self, app, **kwargs):
         self.app : "App" = app
+        self.title = "音乐播放器"
+        
         self.current_index = 0
         self.is_playing = False
         self.shuffle_mode = False
@@ -33,10 +35,25 @@ class MusicPlayer(BasePage):
         
         self.audio = ft.Audio(src=self.get_current_song(), on_position_changed=self.update_progress_ui, on_state_changed=self.update_play_state)
         
-        super().__init__(title="音乐播放器", **kwargs)
+        super().__init__(title=self.title, app=app, **kwargs)
         # Add the audio control to the overlay so it's always available
         self.page.overlay.append(self.audio)
         print("音乐播放器初始化完成")
+    
+    # 注册快捷键
+    def register_shortcuts(self, e:ft.KeyboardEvent):
+        if self.app.current_page.title == self.title:
+            # print(f"按下了快捷键: {e.key}")
+            # print(self.app.current_page.title)
+            if e.key == "Arrow Right" and self.app.current_page.title == self.title:
+                self.next_song(e)
+            elif e.key == "Arrow Left" and self.app.current_page.title == self.title:
+                self.previous_song(e)
+            if e.key == " " and self.app.current_page.title == self.title:
+                self.toggle_play_pause(e)
+        else:
+            pass
+        
 
     def get_all_playlists(self):
         playlists = {}
@@ -142,7 +159,7 @@ class MusicPlayer(BasePage):
 
         # Scroll to the current line
         if current_line >= 7:
-            self.lyrics_text.scroll_to(key=str(current_line-7), duration=500)
+            self.lyrics_text.scroll_to(key=str(current_line-7), duration=100)
         
         self.page.update()
 
@@ -431,6 +448,8 @@ class MusicPlayer(BasePage):
             expand=True
         )
         
+        # 注册快捷键
+        self.page.on_keyboard_event = self.register_shortcuts
         self.page.run_task(self.async_update_lyrics_and_cover)
 
         return ft.Column(

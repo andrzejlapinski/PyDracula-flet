@@ -8,7 +8,6 @@ from app.pages.inputs import InputsPage
 from app.pages.carousel import CarouselPage
 from app.pages.stack_page import StackPage
 from app.pages.player import MusicPlayer
-from app.config.config_manager import ConfigManager
 from app.pages.todo import TodoPage
 
 
@@ -23,25 +22,12 @@ def main(page: ft.Page):
         current_locale=ft.Locale("zh", "CN")
     )
     
-    # 创建配置管理器
-    config_manager = ConfigManager(main_path=main_path)
-    
     # 创建应用配置
-    config = AppConfig()
-    config.app_title = config_manager.get("App", "title", "PyDracula")
-    config.theme_mode = config_manager.get("Theme", "mode", "dark")
-    config.background_image = config_manager.get("Theme", "background_image", "images/backgrounds/background1.jpg")
-    config.window_width = int(config_manager.get("Window", "width", "1300"))
-    config.window_height = int(config_manager.get("Window", "height", "800"))
-    config.window_min_width = int(config_manager.get("Window", "min_width", "800"))
-    config.window_min_height = int(config_manager.get("Window", "min_height", "600"))
-    
-    config.main_path= main_path
-
+    config = AppConfig(main_path)
     
     # 设置字体和主题色
-    font_family = config.font_dict.get(page.platform.value, ["Roboto"])[0]
-    theme_color = config_manager.get("Theme", "color", ft.Colors.BLUE)
+    font_family = config.get("Window", "font").get(page.platform.value, ["Roboto"])[0]
+    theme_color = config.get("Theme", "color", ft.Colors.BLUE)
 
     page.theme = ft.Theme(
         color_scheme_seed=theme_color,

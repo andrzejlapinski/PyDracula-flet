@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Callable, TYPE_CHECKING
 
 from components.stacked_notifications import NotificationManager
-from .theme import ThemeColors
-from app.config.config_manager import ConfigManager
+from .config.theme import ThemeColors
 
 if TYPE_CHECKING:
     from app.app import App

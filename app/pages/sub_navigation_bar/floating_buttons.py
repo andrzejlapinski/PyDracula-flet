@@ -1,7 +1,7 @@
 import asyncio
 import time
 import flet as ft
-from app.base_page import BasePage
+from app.base import BasePage
 
 class FloatingPage(BasePage):
     """浮动按钮示例页面"""
