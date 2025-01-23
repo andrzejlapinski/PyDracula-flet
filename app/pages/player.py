@@ -21,6 +21,7 @@ class MusicPlayer(BasePage):
         self.is_playing = False
         self.shuffle_mode = False
         self.repeat_mode = False
+        self.single_repeat_mode = False
 
         self.current_lyrics = "歌词未找到"
         self.current_cover = "images/default_cover.jpg"
@@ -86,9 +87,16 @@ class MusicPlayer(BasePage):
         self.page.update()
 
     def get_current_song(self):
-        if self.current_playlist == "所有歌曲":
-            return self.all_songs[self.current_index]
-        return self.playlists[self.current_playlist][self.current_index]
+        """
+        请将音乐文件存放在 assets/musics 目录下
+        可根据文件夹名创建多个播放列表
+        """
+        try:
+            if self.current_playlist == "所有歌曲":
+                return self.all_songs[self.current_index]
+            return self.playlists[self.current_playlist][self.current_index]
+        except IndexError:
+            return "musics/01.离别开出花.mp3"
 
     async def async_update_lyrics_and_cover(self):
         if self.current_playlist == "所有歌曲":
@@ -340,6 +348,13 @@ class MusicPlayer(BasePage):
             tooltip="重复列表"
         )
 
+        single_repeat_button = ft.IconButton(
+            icon=ft.Icons.REPEAT_ONE,
+            on_click=self.toggle_single_repeat,
+            icon_size=24,
+            tooltip="单曲循环"
+            )
+
         control_buttons = ft.Row(
             controls=[
                 ft.IconButton(icon=ft.Icons.SKIP_PREVIOUS, on_click=self.previous_song, icon_size=24, icon_color=self.theme_colors.accent_color),
@@ -351,7 +366,7 @@ class MusicPlayer(BasePage):
         )
 
         additional_controls = ft.Row(
-            controls=[shuffle_button, repeat_button],
+            controls=[shuffle_button, repeat_button, single_repeat_button],
             alignment=ft.MainAxisAlignment.CENTER,
             spacing=10
         )
@@ -547,8 +562,26 @@ class MusicPlayer(BasePage):
                 self.page.update()
 
     def update_play_state(self, e):
-        if e.data == "completed" and not self.repeat_mode:
-            self.next_song(e)
+        if e.data == "completed":
+            if self.single_repeat_mode:
+                # 单曲循环模式下，重新播放当前歌曲
+                self.audio.seek(0)
+                self.audio.play()
+            elif not self.repeat_mode:
+                # 非重复模式下，播放下一首
+                self.next_song(e)
+        self.page.update()
+
+    def toggle_single_repeat(self, e):
+        self.single_repeat_mode = not self.single_repeat_mode
+        e.control.icon = ft.Icons.REPEAT_ONE_ON if self.single_repeat_mode else ft.Icons.REPEAT_ONE
+        # 如果开启单曲循环，关闭列表循环
+        if self.single_repeat_mode and self.repeat_mode:
+            self.repeat_mode = False
+            for control in e.control.parent.controls:
+                if control.tooltip == "重复列表":
+                    control.icon = ft.Icons.REPEAT
+                    break
         self.page.update()
 
     def toggle_shuffle(self, e):

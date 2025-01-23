@@ -34,7 +34,9 @@ class BasePage(ABC):
         # 初始化 NotificationManager
         if page is not None and BasePage._notification_manager is None:
             BasePage._notification_manager = NotificationManager(page)
-            
+        
+        # 添加一个新的属性来缓存构建的内容
+        self._built_content = None
         self.content = self.build()
         
     def show_dialog(self, message: str, title: str = "提示"):
@@ -128,6 +130,9 @@ class BasePage(ABC):
         self.theme_colors = theme_colors
         self.theme_mode = theme_mode
 
+        # 清除缓存，强制下次调用build时重新构建
+        self._built_content = None
+
         # 重建页面
         self.content = self.build()
         # 恢复状态
@@ -165,23 +170,24 @@ class BasePage(ABC):
 
     def build(self) -> ft.Container:
         """构建完整的页面布局"""
-        container = ft.Container(
-            content=ft.Column(
-                controls=[
-                    self.build_title(),
-                    ft.Container(
-                        content=self.build_content(),
-                        expand=True,
-                        bgcolor=self.theme_colors.bg_color,
-                    ),
-                ],
-                spacing=0,
-                scroll="none",
-            ),
-            expand=True,
-            bgcolor=self.theme_colors.bg_color,
-        )
-        return container
+        if self._built_content is None or self.is_rebuilding():
+            self._built_content = ft.Container(
+                content=ft.Column(
+                    controls=[
+                        self.build_title(),
+                        ft.Container(
+                            content=self.build_content(),
+                            expand=True,
+                            bgcolor=self.theme_colors.bg_color,
+                        ),
+                    ],
+                    spacing=0,
+                    scroll="none",
+                ),
+                expand=True,
+                bgcolor=self.theme_colors.bg_color,
+            )
+        return self._built_content
 
     def build_section(self, title: str = None, content: ft.Control = None, expand=None, **kwargs) -> ft.Container:
         """构建一个带标题的部分"""
@@ -238,6 +244,9 @@ class BasePage(ABC):
             {"http": proxy_url, "https": proxy_url}
             {"http": None, "https": None}
         """
+        if hasattr(self, "config_manager"):
+            return {"http": None, "https": None}
+        
         enabled_str = self.config_manager.get("Proxy", "enabled", False)
         proxy_url = self.config_manager.get("Proxy", "url", None)
 
