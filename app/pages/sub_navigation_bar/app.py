@@ -241,11 +241,11 @@ class SubNavigationBar(BasePage):
     def _handle_nav_change(self, page_instance):
         """处理子导航切换事件"""
         # 更新当前页面
-        self.current_page = page_instance
+        self.current_page: BasePage = page_instance
 
         # 更新内容区域
         if hasattr(self, 'content_area'):
-            self.content_area.content = self.current_page.build_content()
+            self.content_area.content = self.current_page.content
             self.page.update()
     
     def switch_page(self, page_name: str) -> bool:

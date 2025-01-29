@@ -26,7 +26,7 @@ def main(page: ft.Page):
     config = AppConfig(main_path)
     
     # 设置字体和主题色
-    font_family = config.get("Window", "font").get(page.platform.value, ["Roboto"])[0]
+    font_family = config.get_font_family(platform=page.platform.value, index=0)
     theme_color = config.get("Theme", "color", ft.Colors.BLUE)
 
     page.theme = ft.Theme(

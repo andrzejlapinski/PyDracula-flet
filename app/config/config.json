@@ -1,8 +1,8 @@
 {
     "Theme": {
         "mode": "light",
-        "color": "#6E9ECF",
-        "background_image": "images/backgrounds/background2.jpg"
+        "color": "ft.Colors.BLUE",
+        "background_image": "images/backgrounds/background4.jpg"
     },
     "Window": {
         "width": 1300,
@@ -28,7 +28,29 @@
             ]
         }
     },
-    "App": {
-        "title": "PyDracula"
+    "Music": {
+        "music_dir": "assets/musics",
+        "default_cover": "images/default_cover.jpg",
+        "current_playlist": "所有歌曲",
+        "current_song_path": "/Users/calg/coding/flet_test/assets/musics/网易云/97.一路向北.mp3",
+        "last_position": 2491,
+        "shuffle_mode": true,
+        "repeat_mode": false,
+        "single_repeat_mode": false,
+        "volume": 1.0,
+        "playlist_states": {
+            "所有歌曲": {
+                "last_song_path": "",
+                "last_position": 0
+            },
+            "默认歌单": {
+                "last_song_path": "/Users/calg/coding/flet_test/assets/musics/61.人间半途.mp3",
+                "last_position": 15156
+            },
+            "网易云": {
+                "last_song_path": "/Users/calg/coding/flet_test/assets/musics/网易云/97.一路向北.mp3",
+                "last_position": 2491
+            }
+        }
     }
 }
