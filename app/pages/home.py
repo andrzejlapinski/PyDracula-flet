@@ -8,7 +8,7 @@ import time
 class HomePage(BasePage):
     def __init__(self, **kwargs):
         self.save_state_text = ft.TextField(label="保存状态测试文本框", hint_text="请在此输入，文字在切换主题时会保留")
-        super().__init__(title="主页", **kwargs)
+        super().__init__(title="", **kwargs)
     
     def set_button_loading(self, button: ft.FloatingActionButton, is_loading: bool):
         """

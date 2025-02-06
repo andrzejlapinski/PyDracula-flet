@@ -204,6 +204,13 @@ class App:
             self.page.window.frameless = True
             self.page.window.bgcolor = ft.Colors.TRANSPARENT
             self.page.bgcolor = ft.Colors.TRANSPARENT
+            # 添加窗口阴影
+            # self.page.window.shadow = ft.BoxShadow(
+            #     color=ft.Colors.with_opacity(0.5, ft.Colors.BLACK),
+            #     blur_radius=20,
+            #     spread_radius=5,
+            #     offset=ft.Offset(0, 5),
+            # )
 
         # 设置窗口位置
         self.page.window.center()
@@ -234,7 +241,9 @@ class App:
             self.page.update()
 
         def close(e):
-            self.page.window.close()
+            self.page.window.visible = False
+            self.page.update()
+            self.page.window.destroy()
             self.page.update()
 
         title_bar = ft.WindowDragArea(
@@ -328,12 +337,11 @@ class App:
         # 创建主容器
         self.main_container = ft.Container(
             content=self._create_layout(),
-            # bgcolor=self.theme_colors.bg_color,
-            border_radius=10,
+            border_radius=8,
             expand=True,
             data="window-resizable",
             image=ft.DecorationImage(src=self.config.get("Theme", "background_image"), fit=ft.ImageFit.FILL),
-            # image_fit=ft.ImageFit.FILL,
+            border=ft.border.all(1, self.theme_colors.divider_color) if self.page.platform.value == "windows" else None,
         )
 
         # 添加主容器到页面
