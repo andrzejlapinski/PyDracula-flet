@@ -5,7 +5,6 @@ import asyncio
 import flet as ft
 from app.base import BasePage
 from typing import TYPE_CHECKING
-import traceback
 
 from app.utils import read_song_metadata, format_song_name
 
@@ -30,7 +29,7 @@ class MusicPlayer(BasePage):
         self.is_animating = False
         self.rotation_animation_task = None
         self.current_index = 0
-
+        self.mute = False
         # 初始化音乐目录和播放列表
         self.music_dir = os.path.join(self.app.config.main_path, self.app.config.Music.music_dir)
 
@@ -579,9 +578,9 @@ class MusicPlayer(BasePage):
             )
 
             # 歌手
-            self.current_song_singer = ft.Text("歌手", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS, max_lines=1, color=self.theme_colors.secondary_accent, selectable=True)
+            self.current_song_singer = ft.Text("歌手", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS, max_lines=1, color=self.theme_colors.secondary_accent, selectable=True, tooltip="歌手")
             # 专辑
-            self.current_song_album = ft.Text("专辑", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS, max_lines=1, color=self.theme_colors.secondary_accent, selectable=True)
+            self.current_song_album = ft.Text("专辑", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS, max_lines=1, color=self.theme_colors.secondary_accent, selectable=True, tooltip="专辑")
             # 刷新按钮
             self.refresh_button = ft.TextButton("刷新歌曲信息", on_click=self.refresh_song_metadata, height=20, tooltip="刷新歌曲信息")
 
@@ -607,12 +606,15 @@ class MusicPlayer(BasePage):
 
             self.play_button = ft.IconButton(icon=ft.Icons.PLAY_ARROW, on_click=self.toggle_play_pause, icon_size=32, icon_color=self.theme_colors.accent_color)
 
+            self.mute_button = ft.IconButton(icon=ft.Icons.VOLUME_OFF if self.mute else ft.Icons.VOLUME_UP, on_click=self.toggle_mute, icon_size=24, tooltip="静音 快捷键:M", selected=self.mute)
+
             self.volume_slider = ft.Slider(
                 min=0,
                 max=1,
                 value=self.app.config.Music.volume,  # 使用保存的音量值
                 on_change=self.set_volume,
                 width=150,
+                tooltip="音量 快捷键:上下",
             )
 
             # 保存按钮为类属性
@@ -626,9 +628,9 @@ class MusicPlayer(BasePage):
 
             control_buttons = ft.Row(
                 controls=[
-                    ft.IconButton(icon=ft.Icons.SKIP_PREVIOUS, on_click=self.previous_song, icon_size=24, icon_color=self.theme_colors.accent_color),
+                    ft.IconButton(icon=ft.Icons.SKIP_PREVIOUS, on_click=self.previous_song, icon_size=24, icon_color=self.theme_colors.accent_color, tooltip="上一首 快捷键:左"),
                     self.play_button,
-                    ft.IconButton(icon=ft.Icons.SKIP_NEXT, on_click=self.next_song, icon_size=24, icon_color=self.theme_colors.accent_color),
+                    ft.IconButton(icon=ft.Icons.SKIP_NEXT, on_click=self.next_song, icon_size=24, icon_color=self.theme_colors.accent_color, tooltip="下一首 快捷键:右"),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 spacing=10,
@@ -674,7 +676,7 @@ class MusicPlayer(BasePage):
                         ),
                         ft.Column(
                             controls=[
-                                ft.Row(controls=[ft.Container(), control_buttons, self.volume_slider], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, vertical_alignment=ft.CrossAxisAlignment.CENTER, expand=True),
+                                ft.Row(controls=[ft.Container(), control_buttons, ft.Row([self.mute_button, self.volume_slider])], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, vertical_alignment=ft.CrossAxisAlignment.CENTER, expand=True),
                                 ft.Row(controls=[self.progress, self.time_display, additional_controls], spacing=10, alignment=ft.MainAxisAlignment.CENTER, expand=True),
                             ],
                             spacing=5,
@@ -815,9 +817,24 @@ class MusicPlayer(BasePage):
 
     def set_volume(self, e):
         """设置音量"""
-        if self.audio:
-            self.audio.volume = e.data
-            self.app.config.set("Music", "volume", float(e.data))
+        try:
+            # 使用滑块的value属性并四舍五入到2位小数
+            volume = round(self.volume_slider.value, 2)
+            # 确保音量在0-1之间
+            volume = max(0.0, min(1.0, volume))
+            
+            if self.audio:
+                self.audio.volume = volume
+                self.app.config.set("Music", "volume", volume)
+                print(f"音量已设置为: {volume:.2f}")
+                # 更新滑块显示值，确保显示的也是2位小数
+                self.volume_slider.value = volume
+                self.update()
+                
+        except Exception as err:
+            print(f"设置音量时出错: {str(err)}")
+            # 恢复到之前保存的音量值
+            self.volume_slider.value = round(self.app.config.Music.volume, 2)
             self.update()
 
     def update_time_display(self, position, duration):
@@ -908,3 +925,20 @@ class MusicPlayer(BasePage):
                 self.previous_song(e)
             elif e.key == " ":  # 空格键
                 self.toggle_play_pause(e)
+            elif e.key == "M":  # 按下m键
+                self.toggle_mute(e)
+            elif e.key == "Arrow Up":
+                self.volume_slider.value += 0.1
+                self.set_volume(e)
+            elif e.key == "Arrow Down":
+                self.volume_slider.value -= 0.1
+                self.set_volume(e)
+    
+    def toggle_mute(self, e):
+        """切换静音状态"""
+        self.mute = not self.mute
+        self.mute_button.icon = ft.Icons.VOLUME_OFF if self.mute else ft.Icons.VOLUME_UP
+        self.audio.volume = 0 if self.mute else self.app.config.Music.volume
+        self.volume_slider.value = 0 if self.mute else self.app.config.Music.volume
+        self.show_notification(f"静音状态已切换为: {'静音' if self.mute else '非静音'}")
+        self.page.update()

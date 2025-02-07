@@ -272,7 +272,7 @@ async def update_song_metadata(song_name: str, song_path: str, increment_index: 
 
     except Exception as e:
         print(f"处理流程异常: {str(e)}")
-        return None
+        return {"title": song_name, "artist": "", "album": "", "isrc": "", "cover_url": "", "lyrics": ""}
 
 async def read_song_metadata(song_path: str, increment_index: bool = False) -> Optional[dict]:
     """
