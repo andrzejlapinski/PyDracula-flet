@@ -35,3 +35,13 @@ Thumbs.db
 # music
 *.mp3
 *.lrc
+
+# data
+*.csv
+*.xlsx
+*.xls
+*.docx
+*.doc
+*.pptx
+*.ppt
+*.json
