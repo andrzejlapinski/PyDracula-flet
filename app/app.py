@@ -131,6 +131,7 @@ class NavRail:
                 ft.CircleAvatar(
                     foreground_image_src="images/user.jpeg",
                     content=ft.Text("User"),
+                    tooltip="用户头像"
                 ),
                 ft.Container(
                     content=ft.CircleAvatar(bgcolor=self.theme_colors.accent_color, radius=5),
