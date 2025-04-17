@@ -3,6 +3,7 @@ import random
 import math
 import asyncio
 import flet as ft
+import flet_audio as fta
 from app.base import BasePage
 from typing import TYPE_CHECKING
 
@@ -29,7 +30,8 @@ class MusicPlayer(BasePage):
         self.current_index = 0
         self.mute = False
         # 初始化音乐目录和播放列表
-        self.music_dir = os.path.join(self.app.config.main_path, self.app.config.Music.music_dir)
+        self.music_dir = os.path.join(
+            self.app.config.main_path, self.app.config.Music.music_dir)
 
         # 初始化播放列表, 提供一些基础信息
         self.playlists = {
@@ -49,7 +51,8 @@ class MusicPlayer(BasePage):
                 print(f"创建音乐目录失败: {str(e)}")
 
         # 初始化音频控件
-        self.audio = ft.Audio(src="default_music.mp3", volume=self.app.config.Music.volume)
+        self.audio = fta.Audio(src="default_music.mp3",
+                               volume=self.app.config.Music.volume)
 
         # 调用父类初始化
         super().__init__(title=self.title, app=app, **kwargs)
@@ -57,7 +60,6 @@ class MusicPlayer(BasePage):
         # 添加音频控件到页面
         self.page.overlay.append(self.audio)
         self.page.update()
-
 
     def rotate_album_cover(self):
         if not self.is_animating and self.is_playing:
@@ -68,8 +70,10 @@ class MusicPlayer(BasePage):
 
     async def rotation_animation(self):
         while self.is_animating:
-            self.album_cover_rotation_angle += math.radians(1)  # Increment by 1 degree in radians
-            self.album_cover.rotate = ft.transform.Rotate(self.album_cover_rotation_angle)
+            # Increment by 1 degree in radians
+            self.album_cover_rotation_angle += math.radians(1)
+            self.album_cover.rotate = ft.transform.Rotate(
+                self.album_cover_rotation_angle)
             self.page.update()
             await asyncio.sleep(0.016)  # Approximately 60 FPS
 
@@ -133,7 +137,6 @@ class MusicPlayer(BasePage):
         # 保存当前播放列表设置（但不影响播放状态）
         self.app.config.set("Music", "current_playlist", self.current_playlist)
 
-
     def build_content(self):
         """构建播放器界面"""
         try:
@@ -146,7 +149,8 @@ class MusicPlayer(BasePage):
                 height=60,
                 content=ft.Icon(ft.Icons.MUSIC_NOTE, size=40),
                 rotate=ft.transform.Rotate(0),  # Initial rotation is 0
-                animate_rotation=ft.animation.Animation(16, "linear"),  # Smooth linear animation over 1 second for each 360 degrees，
+                # Smooth linear animation over 1 second for each 360 degrees，
+                animate_rotation=ft.animation.Animation(16, "linear"),
             )
 
             self.current_song_text = ft.Text(
@@ -161,11 +165,14 @@ class MusicPlayer(BasePage):
             )
 
             # 歌手
-            self.current_song_singer = ft.Text("歌手", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS, max_lines=1, color=self.theme_colors.secondary_accent, selectable=True, tooltip="歌手")
+            self.current_song_singer = ft.Text("歌手", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS,
+                                               max_lines=1, color=self.theme_colors.secondary_accent, selectable=True, tooltip="歌手")
             # 专辑
-            self.current_song_album = ft.Text("专辑", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS, max_lines=1, color=self.theme_colors.secondary_accent, selectable=True, tooltip="专辑")
+            self.current_song_album = ft.Text("专辑", size=12, weight=ft.FontWeight.NORMAL, width=200, overflow=ft.TextOverflow.ELLIPSIS,
+                                              max_lines=1, color=self.theme_colors.secondary_accent, selectable=True, tooltip="专辑")
             # 刷新按钮
-            self.refresh_button = ft.TextButton("刷新歌曲信息", height=20, tooltip="刷新歌曲信息")
+            self.refresh_button = ft.TextButton(
+                "刷新歌曲信息", height=20, tooltip="刷新歌曲信息")
 
             # Scrollable lyrics
             self.lyrics_text = ft.Column(
@@ -186,9 +193,11 @@ class MusicPlayer(BasePage):
 
             self.time_display = ft.Text("00:00 / 00:00", size=12)
 
-            self.play_button = ft.IconButton(icon=ft.Icons.PLAY_ARROW, on_click=self.toggle_play_pause, icon_size=32, icon_color=self.theme_colors.accent_color)
+            self.play_button = ft.IconButton(
+                icon=ft.Icons.PLAY_ARROW, on_click=self.toggle_play_pause, icon_size=32, icon_color=self.theme_colors.accent_color)
 
-            self.mute_button = ft.IconButton(icon=ft.Icons.VOLUME_OFF if self.mute else ft.Icons.VOLUME_UP, icon_size=24, tooltip="静音 快捷键:M", selected=self.mute)
+            self.mute_button = ft.IconButton(
+                icon=ft.Icons.VOLUME_OFF if self.mute else ft.Icons.VOLUME_UP, icon_size=24, tooltip="静音 快捷键:M", selected=self.mute)
 
             self.volume_slider = ft.Slider(
                 min=0,
@@ -199,9 +208,11 @@ class MusicPlayer(BasePage):
             )
 
             # 保存按钮为类属性
-            self.shuffle_button = ft.IconButton(icon=ft.Icons.SHUFFLE_ON if self.shuffle_mode else ft.Icons.SHUFFLE, icon_size=24, tooltip="随机播放", selected=self.shuffle_mode)
+            self.shuffle_button = ft.IconButton(
+                icon=ft.Icons.SHUFFLE_ON if self.shuffle_mode else ft.Icons.SHUFFLE, icon_size=24, tooltip="随机播放", selected=self.shuffle_mode)
 
-            self.repeat_button = ft.IconButton(icon=ft.Icons.REPEAT_ON if self.repeat_mode else ft.Icons.REPEAT,  icon_size=24, tooltip="重复列表", selected=self.repeat_mode)
+            self.repeat_button = ft.IconButton(
+                icon=ft.Icons.REPEAT_ON if self.repeat_mode else ft.Icons.REPEAT,  icon_size=24, tooltip="重复列表", selected=self.repeat_mode)
 
             self.single_repeat_button = ft.IconButton(
                 icon=ft.Icons.REPEAT_ONE_ON if self.single_repeat_mode else ft.Icons.REPEAT_ONE, icon_size=24, tooltip="单曲循环", selected=self.single_repeat_mode
@@ -209,23 +220,28 @@ class MusicPlayer(BasePage):
 
             control_buttons = ft.Row(
                 controls=[
-                    ft.IconButton(icon=ft.Icons.SKIP_PREVIOUS, on_click=self.previous_song, icon_size=24, icon_color=self.theme_colors.accent_color, tooltip="上一首 快捷键:左"),
+                    ft.IconButton(icon=ft.Icons.SKIP_PREVIOUS, on_click=self.previous_song,
+                                  icon_size=24, icon_color=self.theme_colors.accent_color, tooltip="上一首 快捷键:左"),
                     self.play_button,
-                    ft.IconButton(icon=ft.Icons.SKIP_NEXT, on_click=self.next_song, icon_size=24, icon_color=self.theme_colors.accent_color, tooltip="下一首 快捷键:右"),
+                    ft.IconButton(icon=ft.Icons.SKIP_NEXT, on_click=self.next_song, icon_size=24,
+                                  icon_color=self.theme_colors.accent_color, tooltip="下一首 快捷键:右"),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 spacing=10,
             )
 
-            additional_controls = ft.Row(controls=[self.shuffle_button, self.repeat_button, self.single_repeat_button], alignment=ft.MainAxisAlignment.CENTER, spacing=10)
+            additional_controls = ft.Row(controls=[self.shuffle_button, self.repeat_button,
+                                         self.single_repeat_button], alignment=ft.MainAxisAlignment.CENTER, spacing=10)
 
             # Create a ListView for playlists
             self.playlist_list = ft.ListView(
                 controls=[
                     ft.ListTile(
-                        title=ft.Text(playlist_name, color=self.theme_colors.accent_color if playlist_name == self.current_playlist else None),
+                        title=ft.Text(
+                            playlist_name, color=self.theme_colors.accent_color if playlist_name == self.current_playlist else None),
                         bgcolor=self.theme_colors.card_color if playlist_name == self.current_playlist else "transparent",
-                        on_click=lambda e, playlist_name=playlist_name: self.show_playlist(playlist_name),
+                        on_click=lambda e, playlist_name=playlist_name: self.show_playlist(
+                            playlist_name),
                     )
                     for playlist_name in list(self.playlists.keys())
                 ],
@@ -257,8 +273,10 @@ class MusicPlayer(BasePage):
                         ),
                         ft.Column(
                             controls=[
-                                ft.Row(controls=[ft.Container(), control_buttons, ft.Row([self.mute_button, self.volume_slider])], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, vertical_alignment=ft.CrossAxisAlignment.CENTER, expand=True),
-                                ft.Row(controls=[self.progress, self.time_display, additional_controls], spacing=10, alignment=ft.MainAxisAlignment.CENTER, expand=True),
+                                ft.Row(controls=[ft.Container(), control_buttons, ft.Row([self.mute_button, self.volume_slider])],
+                                       alignment=ft.MainAxisAlignment.SPACE_BETWEEN, vertical_alignment=ft.CrossAxisAlignment.CENTER, expand=True),
+                                ft.Row(controls=[self.progress, self.time_display, additional_controls],
+                                       spacing=10, alignment=ft.MainAxisAlignment.CENTER, expand=True),
                             ],
                             spacing=5,
                             expand=True,
@@ -277,7 +295,8 @@ class MusicPlayer(BasePage):
                 controls=[
                     ft.Column(
                         controls=[
-                            ft.Text("播放列表", size=20, weight=ft.FontWeight.BOLD),
+                            ft.Text("播放列表", size=20,
+                                    weight=ft.FontWeight.BOLD),
                             ft.Row(
                                 controls=[
                                     ft.Container(
@@ -321,7 +340,8 @@ class MusicPlayer(BasePage):
             return ft.Container(
                 content=ft.Column(
                     controls=[
-                        ft.Text("构建播放器界面时出错", size=20, color=self.theme_colors.accent_color),
+                        ft.Text("构建播放器界面时出错", size=20,
+                                color=self.theme_colors.accent_color),
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,

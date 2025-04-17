@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.app import AppConfig
 
+
 class SettingsPage(BasePage):
     def __init__(self, config_manager, **kwargs):
         self.config_manager: AppConfig = config_manager
@@ -49,7 +50,8 @@ class SettingsPage(BasePage):
         ], alignment=ft.MainAxisAlignment.START)
 
         # 主题色选择
-        current_color = self.config_manager.get("Theme", "color", ft.Colors.BLUE)
+        current_color = self.config_manager.get(
+            "Theme", "color", ft.Colors.BLUE)
         theme_colors_row = ft.Row([
             ft.Text("主题色 ", size=16, color=self.theme_colors.text_color),
             ft.Container(width=20),
@@ -78,16 +80,19 @@ class SettingsPage(BasePage):
                 ],
                 on_change=lambda e: self._handle_theme_color_change(e.data),
                 select_icon=ft.Icons.CHECK,
-                select_icon_enabled_color=self.theme_colors.text_color,
+                # select_icon_enabled_color=self.theme_colors.text_color, # deprecated
             ),
         ], alignment=ft.MainAxisAlignment.START)
 
         # 背景图片选择
-        current_bg = self.config_manager.get("Theme", "background_image", "images/backgrounds/background1.jpg").split("/")[-1]
+        current_bg = self.config_manager.get(
+            "Theme", "background_image", "images/backgrounds/background1.jpg").split("/")[-1]
         # 获取背景图片列表
-        bg_dir = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "images", "backgrounds")
-        bg_files = [f for f in os.listdir(bg_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        
+        bg_dir = os.path.join(os.path.dirname(__file__),
+                              "..", "..", "assets", "images", "backgrounds")
+        bg_files = [f for f in os.listdir(
+            bg_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+
         background_row = ft.Row([
             ft.Text("背景图片", size=16, color=self.theme_colors.text_color),
             ft.Container(width=20),
@@ -99,15 +104,17 @@ class SettingsPage(BasePage):
                     ft.dropdown.Option(
                         key=bg_file,
                         content=ft.Row([
-                            ft.Icon(ft.Icons.IMAGE, color=self.theme_colors.text_color),
-                            ft.Text(f"{bg_file.split('.')[0]}", color=self.theme_colors.text_color)
+                            ft.Icon(ft.Icons.IMAGE,
+                                    color=self.theme_colors.text_color),
+                            ft.Text(
+                                f"{bg_file.split('.')[0]}", color=self.theme_colors.text_color)
                         ])
                     )
                     for bg_file in bg_files
                 ],
                 on_change=lambda e: self._handle_background_change(e.data),
                 select_icon=ft.Icons.CHECK,
-                select_icon_enabled_color=self.theme_colors.text_color,
+                # select_icon_enabled_color=self.theme_colors.text_color, # deprecated
             ),
         ], alignment=ft.MainAxisAlignment.START)
 
@@ -140,7 +147,8 @@ class SettingsPage(BasePage):
         )
 
         # 测试按钮和结果文本
-        self.proxy_test_text = ft.Text("", size=14, color=self.theme_colors.text_color)
+        self.proxy_test_text = ft.Text(
+            "", size=14, color=self.theme_colors.text_color)
         test_button = ft.ElevatedButton(
             "测试代理",
             icon=ft.Icons.NETWORK_CHECK,
@@ -150,7 +158,8 @@ class SettingsPage(BasePage):
         # 创建一个容器来包含代理URL输入框、测试按钮和结果文本
         self.proxy_controls = ft.Column([
             ft.Row(
-                [self.proxy_switch,self.proxy_url, test_button, self.proxy_test_text],
+                [self.proxy_switch, self.proxy_url,
+                    test_button, self.proxy_test_text],
                 spacing=20,
             ),
         ], spacing=10, expand=True)
@@ -206,23 +215,29 @@ class SettingsPage(BasePage):
         # 头部信息
         header = ft.Row([
             ft.Column([
-                ft.Text("PyDracula", size=30, weight="bold", color=self.theme_colors.text_color),
-                ft.Text(f"Version {VERSION}", size=16, color=self.theme_colors.text_color, opacity=0.8),
+                ft.Text("PyDracula", size=30, weight="bold",
+                        color=self.theme_colors.text_color),
+                ft.Text(f"Version {VERSION}", size=16,
+                        color=self.theme_colors.text_color, opacity=0.8),
             ]),
             ft.Container(expand=True),
-            ft.TextButton("访问 GitHub", icon=ft.Icons.OPEN_IN_NEW, url=GITHUB_URL),
+            ft.TextButton("访问 GitHub", icon=ft.Icons.OPEN_IN_NEW,
+                          url=GITHUB_URL),
         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
         # 底部信息
         footer = ft.Row([
             ft.Container(
                 content=ft.Row([
-                    ft.Icon(ft.Icons.COPYRIGHT, color=self.theme_colors.text_color, opacity=0.5, size=16),
-                    ft.Text("2024 calg", size=14, color=self.theme_colors.text_color, opacity=0.5),
+                    ft.Icon(
+                        ft.Icons.COPYRIGHT, color=self.theme_colors.text_color, opacity=0.5, size=16),
+                    ft.Text("2024 calg", size=14,
+                            color=self.theme_colors.text_color, opacity=0.5),
                 ], spacing=5),
             ),
             ft.Container(expand=True),
-            ft.TextButton("检查更新", icon=ft.Icons.SYSTEM_UPDATE, on_click=self._check_updates),
+            ft.TextButton("检查更新", icon=ft.Icons.SYSTEM_UPDATE,
+                          on_click=self._check_updates),
         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
         return self.build_section(
@@ -230,7 +245,8 @@ class SettingsPage(BasePage):
             ft.Column([
                 header,
                 ft.Container(height=20),
-                ft.Text(APP_DESCRIPTION, size=14, color=self.theme_colors.text_color, opacity=0.7),
+                ft.Text(APP_DESCRIPTION, size=14,
+                        color=self.theme_colors.text_color, opacity=0.7),
                 ft.Container(height=10),
                 footer,
             ], spacing=10)
@@ -262,7 +278,7 @@ class SettingsPage(BasePage):
         )
         if self.config_manager:
             self.config_manager.set("Theme", "color", color)
-            
+
         if self.on_theme_changed:
             self.theme_colors.current_color = self.page.theme.color_scheme_seed
             theme_mode = self.config_manager.get("Theme", "mode", "dark")
@@ -273,15 +289,18 @@ class SettingsPage(BasePage):
         """处理背景图片变更"""
         if not background:
             return
-            
+
         # 更新配置文件
         if self.config_manager:
-            self.config_manager.set("Theme", "background_image", f"images/backgrounds/{background}")
-            
+            self.config_manager.set(
+                "Theme", "background_image", f"images/backgrounds/{background}")
+
         # 通知主题变化
         if self.on_theme_changed:
-            self.app.config.set("Theme", "background_image", f"images/backgrounds/{background}")
-            self.on_theme_changed(self.config_manager.get("Theme", "mode", "dark"))
+            self.app.config.set("Theme", "background_image",
+                                f"images/backgrounds/{background}")
+            self.on_theme_changed(
+                self.config_manager.get("Theme", "mode", "dark"))
         self.page.update()
 
     def _handle_window_size_change(self, e):
@@ -321,16 +340,16 @@ class SettingsPage(BasePage):
 
             response = await asyncio.to_thread(make_request)
             data = response.json()
-            
+
             if response.status_code == 200:
                 self.proxy_test_text.value = f"当前IP: {data.get('query', 'Unknown')} ({data.get('country', 'Unknown')})"
                 self.proxy_test_text.color = self.theme_colors.text_color
             else:
                 self.proxy_test_text.value = "测试失败: 无法获取IP信息"
                 self.proxy_test_text.color = self.theme_colors.text_color
-                
+
         except Exception as ex:
             self.proxy_test_text.value = f"测试失败: {str(ex)}"
             self.proxy_test_text.color = self.theme_colors.text_color
-            
+
         self.page.update()

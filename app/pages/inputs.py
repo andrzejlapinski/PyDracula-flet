@@ -1,6 +1,7 @@
 import flet as ft
 from app.base import BasePage
 
+
 class InputsPage(BasePage):
     def __init__(self, **kwargs):
         super().__init__(title="输入控件", **kwargs)
@@ -16,7 +17,7 @@ class InputsPage(BasePage):
             self._build_sliders(),
         ], scroll="auto", spacing=20)
         return container
-        
+
     def _build_text_inputs(self) -> ft.Container:
         self.text_field = ft.TextField()
         self.content = ft.Column([
@@ -39,7 +40,7 @@ class InputsPage(BasePage):
                 max_lines=5,
             ),
         ], spacing=20)
-        
+
         return self.build_section("文本输入", self.content)
 
     def _build_dropdowns(self) -> ft.Container:
@@ -58,7 +59,7 @@ class InputsPage(BasePage):
             # 使用前缀图标的下拉框
             ft.Dropdown(
                 label="带图标的下拉框",
-                prefix_icon=ft.Icons.SETTINGS,
+                # prefix_icon=ft.Icons.SETTINGS,
                 options=[
                     ft.dropdown.Option("编辑"),
                     ft.dropdown.Option("删除"),
@@ -77,7 +78,7 @@ class InputsPage(BasePage):
                 disabled=True,
             ),
         ], spacing=20)
-        
+
         return self.build_section("下拉选择", self.content)
 
     def _build_checkboxes(self) -> ft.Container:
@@ -87,7 +88,7 @@ class InputsPage(BasePage):
             ft.Checkbox(label="三态复选框", tristate=True),
             ft.Checkbox(label="禁用状态", disabled=True),
         ], spacing=10)
-        
+
         return self.build_section("复选框", self.content)
 
     def _build_radios(self) -> ft.Container:
@@ -96,7 +97,7 @@ class InputsPage(BasePage):
             ft.Radio(value="option2", label="选项2"),
             ft.Radio(value="option3", label="选项3", disabled=True),
         ], spacing=10)
-        
+
         return self.build_section("单选框", self.content)
 
     def _build_switches(self) -> ft.Container:
@@ -105,7 +106,7 @@ class InputsPage(BasePage):
             ft.Switch(label="默认开启", value=True),
             ft.Switch(label="禁用状态", disabled=True),
         ], spacing=20)
-        
+
         return self.build_section("开关", self.content)
 
     def _build_sliders(self) -> ft.Container:
@@ -124,5 +125,5 @@ class InputsPage(BasePage):
                 label="{value}",
             ),
         ], spacing=20)
-        
+
         return self.build_section("滑块", self.content)
